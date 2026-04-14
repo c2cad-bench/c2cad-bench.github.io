@@ -150,6 +150,11 @@
             border-bottom: 2px solid var(--accent);
         }
 
+        .nav-links a.active-link {
+            color: var(--accent) !important;
+            border-bottom: 2px solid var(--accent);
+        }
+
         /* --- Hero --- */
         .hero {
             padding: 140px 0 80px;
@@ -478,6 +483,7 @@
         <div class="container">
             <a href="#" class="nav-brand">C2CAD-Bench</a>
             <div class="nav-links">
+                <a href="#abstract">Abstract</a>
                 <a href="#about">About</a>
                 <a href="#benchmarks">Benchmarks</a>
                 <a href="#analysis">Analysis</a>
@@ -495,7 +501,7 @@
             <p class="subtitle">A Large-Scale Benchmark for 3D Spatial Reasoning and CAD Geometry Generation</p>
             
             <div class="authors">
-                C2CAD-Bench Research Team • 2026
+                Anonymous Authors
             </div>
 
             <div class="hero-buttons">
@@ -509,6 +515,17 @@
             </figure>
         </div>
     </div>
+
+    <section id="abstract" class="reveal reveal-up">
+        <div class="container">
+            <div style="max-width: 850px; margin: 0 auto; background: var(--bg-subtle); padding: 40px; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--card-shadow);">
+                <h2 style="text-align: center; margin-bottom: 24px; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-light);">Abstract</h2>
+                <p style="font-size: 1.05rem; line-height: 1.8; color: var(--text-main); font-style: italic; text-align: justify; margin: 0;">
+                    AI-assisted CAD design relies on a prompt-to-code-to-CAD pipeline, where an LLM generates code for a CAD engine from a natural-language description. Existing benchmarks combine programming proficiency with spatial understanding, a syntactically correct script that places every part at the wrong coordinate passes all execution-based checks, moreover image-based evaluation cannot inspect internal geometry such as lattice connectivity or clearance fits. We introduce <strong>C2CAD-BENCH</strong>, a benchmark that isolates 3D spatial reasoning from code-generation proficiency by removing the code layer entirely. Models receive a natural-language engineering specification and must produce a JSON array of geometric primitives, scored deterministically against parametric ground truth without code execution or rendering. Prompts follow a zero-scaffolding methodology that supplies only physical intent, requiring models to derive every coordinate from first principles. The benchmark comprises 25 test families across four phases of cognitive demand (75 test cases, up to 805 shapes), evaluated with a gated three-axis scoring pipeline (Coverage, Geometry, Semantic). Evaluation of 13 frontier LLMs from five providers reveals a persistent coverage–geometry gap of roughly 19 points, systematic primitive type confusion, and that constraint complexity rather than shape count drives difficulty.
+                </p>
+            </div>
+        </div>
+    </section>
 
     <section id="about">
         <div class="container">
@@ -655,6 +672,7 @@
     <footer>
         <div class="container">
             <div class="footer-links">
+                <a href="#abstract">Abstract</a>
                 <a href="#about">About</a>
                 <a href="./ui/results.html">Scoreboard</a>
                 <a href="./ui/visualizer.html">3D Viewer</a>
@@ -739,23 +757,25 @@
 
         // Active nav highlighting
         window.addEventListener('scroll', () => {
-            const sections = document.querySelectorAll('section');
+            const sections = document.querySelectorAll('section, .hero');
             const navLinks = document.querySelectorAll('.nav-links a');
             let current = '';
 
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
-                if (pageYOffset >= sectionTop - 100) {
-                    current = section.getAttribute('id');
+                if (window.pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id') || '';
                 }
             });
 
             navLinks.forEach(link => {
-                link.classList.remove('cta'); // Reset highlighting except for visualizer which is always CTA
-                if (link.getAttribute('href').includes(current) && current !== '') {
-                    // We don't want to mess up the visualizer button
+                link.classList.remove('active-link');
+                const href = link.getAttribute('href');
+                if (href === '#' && current === '') {
+                    // Hero/Top state
+                } else if (href.includes(current) && current !== '') {
                     if (!link.classList.contains('cta')) {
-                        // link.style.color = 'var(--accent)';
+                        link.classList.add('active-link');
                     }
                 }
             });
