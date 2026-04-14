@@ -13,17 +13,44 @@
     
     <style>
         :root {
-            --bg-page: #ffffff;
+            --bg-page: #fdfdfe;
             --bg-subtle: #f8fafc;
+            --bg-grid: rgba(37, 99, 235, 0.03);
             --text-main: #0f172a;
             --text-muted: #475569;
             --text-light: #64748b;
             --accent: #2563eb;
+            --accent-soft: rgba(37, 99, 235, 0.1);
             --accent-hover: #1d4ed8;
             --border: #e2e8f0;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-            --radius: 8px;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --radius: 12px;
+            --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-heading: 'Outfit', sans-serif;
         }
+
+        /* --- Animations --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .reveal {
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0) !important;
+        }
+
+        .reveal-up { transform: translateY(40px); }
 
         * {
             box-sizing: border-box;
@@ -62,15 +89,29 @@
             padding: 0 24px;
         }
 
+        /* --- Progress Bar --- */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent), #c084fc);
+            z-index: 1001;
+            width: 0%;
+            transition: width 0.1s;
+        }
+
         /* --- Navigation --- */
         nav {
             position: sticky;
             top: 0;
-            z-index: 100;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--border);
-            padding: 12px 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+            padding: 14px 0;
+            transition: background 0.3s;
         }
 
         nav .container {
@@ -111,8 +152,36 @@
 
         /* --- Hero --- */
         .hero {
-            padding: 100px 0 60px;
+            padding: 140px 0 80px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.05), transparent),
+                        radial-gradient(circle at bottom left, rgba(168, 85, 247, 0.05), transparent);
+        }
+
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            animation: fadeInUp 0.8s ease-out;
         }
 
         .hero h1 {
@@ -403,6 +472,7 @@
     </style>
 </head>
 <body>
+    <div id="progress-bar"></div>
 
     <nav>
         <div class="container">
@@ -418,21 +488,22 @@
     </nav>
 
     <div class="hero">
+        <canvas id="hero-canvas"></canvas>
         <div class="container">
+            <span class="hero-badge">Frontier AI Benchmark</span>
             <h1>C2CAD-Bench</h1>
             <p class="subtitle">A Large-Scale Benchmark for 3D Spatial Reasoning and CAD Geometry Generation</p>
             
             <div class="authors">
-                C2CAD-Bench Research Team
+                C2CAD-Bench Research Team • 2026
             </div>
 
             <div class="hero-buttons">
-                <!-- Final operational internal links -->
                 <a href="./ui/results.html" class="btn btn-primary">Evaluation Scoreboard</a>
                 <a href="./ui/visualizer.html" class="btn btn-secondary">Interactive 3D Evaluator</a>
             </div>
 
-            <figure class="hero-fig">
+            <figure class="hero-fig reveal reveal-up">
                 <img src="results/fig1_overall_rankings.png" alt="Overall Model Rankings Heatmap">
                 <figcaption><strong>Figure 1:</strong> Comparative evaluation of 13 frontier Large Language Models across the C2CAD-Bench spectrum.</figcaption>
             </figure>
@@ -462,15 +533,15 @@
             </div>
 
             <div class="highlights-grid">
-                <div class="highlight-item">
+                <div class="highlight-item reveal reveal-up" style="transition-delay: 0.1s;">
                     <h3>75 Test Cases</h3>
                     <p>Covering 25 distinct test families across three complexity levels (Primitive, Structure, Assembly).</p>
                 </div>
-                <div class="highlight-item">
+                <div class="highlight-item reveal reveal-up" style="transition-delay: 0.2s;">
                     <h3>13 Frontier Models</h3>
                     <p>Evaluating state-of-the-art models including Gemini, GPT-4, Claude 3.5, and DeepSeek.</p>
                 </div>
-                <div class="highlight-item">
+                <div class="highlight-item reveal reveal-up" style="transition-delay: 0.3s;">
                     <h3>Tri-Partite Scoring</h3>
                     <p>Automated validation of Coverage (20%), Geometry (30%), and Semantic Validity (50%).</p>
                 </div>
@@ -485,20 +556,20 @@
                 <p>Tracking model performance across dimensionality and constraint complexity.</p>
             </div>
 
-            <figure>
+            <figure class="reveal reveal-up">
                 <img src="results/fig4_phase_performance.png" alt="Phase Performance Analysis">
                 <figcaption><strong>Figure 2:</strong> Model performance distributions across the four benchmark phases, highlighting the transition from basic forms to engineering assemblies.</figcaption>
             </figure>
 
             <div class="analysis-row">
-                <div class="analysis-item">
+                <div class="analysis-item reveal reveal-up">
                     <h3>Spatial Reasoning Signatures</h3>
                     <img src="results/fig9_radar_profiles.png" alt="Radar Profiles" style="width: 100%;">
                     <p style="font-size: 14px; color: var(--text-muted); margin-top: 15px;">
                         Radar profiles reveal the "spatial signature" of each model family, identifying distinctive reasoning biases and architectural strengths.
                     </p>
                 </div>
-                <div class="analysis-item">
+                <div class="analysis-item reveal reveal-up" style="transition-delay: 0.2s;">
                     <h3>Performance Distributions</h3>
                     <img src="results/fig11_violin_distributions.png" alt="Violin Distributions" style="width: 100%;">
                     <p style="font-size: 14px; color: var(--text-muted); margin-top: 15px;">
@@ -544,7 +615,7 @@
             </div>
 
             <div class="gallery-grid">
-                <div class="gallery-card">
+                <div class="gallery-card reveal reveal-up">
                     <div class="img-container">
                         <img src="results/fig17_spiral_staircase_comparison.png" alt="Spiral Staircase">
                     </div>
@@ -553,7 +624,7 @@
                         <p>Tests trigonometric accuracy and polar pattern repetition in vertical space.</p>
                     </div>
                 </div>
-                <div class="gallery-card">
+                <div class="gallery-card reveal reveal-up" style="transition-delay: 0.2s;">
                     <div class="img-container">
                         <img src="results/fig21_radiolarian_skeleton_comparison.png" alt="Radiolarian Skeleton">
                     </div>
@@ -593,6 +664,70 @@
     </footer>
 
     <script>
+        // WebGL-lite Background Animation
+        (function() {
+            const canvas = document.getElementById('hero-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let w, h;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = canvas.parentElement.offsetHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            const grid = 50;
+            let offset = 0;
+
+            function draw() {
+                ctx.clearRect(0, 0, w, h);
+                ctx.strokeStyle = 'rgba(37, 99, 235, 0.08)';
+                ctx.lineWidth = 1;
+
+                // Dynamic Perspective Grid
+                ctx.beginPath();
+                for (let x = -grid; x < w + grid; x += grid) {
+                    ctx.moveTo(x + (offset % grid), 0);
+                    ctx.lineTo(x + (offset % grid) - 200, h);
+                }
+                for (let y = 0; y < h; y += grid) {
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(w, y);
+                }
+                ctx.stroke();
+
+                offset += 0.2;
+                requestAnimationFrame(draw);
+            }
+            draw();
+        })();
+
+        // Scroll Reveal logic
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Reading Progress
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("progress-bar").style.width = scrolled + "%";
+        });
+
         function copyCitation() {
             const bib = document.getElementById('bibtex').innerText;
             navigator.clipboard.writeText(bib).then(() => {
