@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/c2cad.css">
     <link rel="stylesheet" href="css/landing.css">
+    <link rel="stylesheet" href="css/home_table.css">
     <style>
         .publication-title {
             background: linear-gradient(135deg, var(--text-main) 0%, var(--accent) 100%);
@@ -240,6 +241,22 @@
         </div>
     </section>
 
+    <!-- Showcase Table Section -->
+    <section class="section">
+        <div class="container is-max-desktop">
+            <h2 class="section-title">Live Leaderboard Showcase</h2>
+            <div id="home-showcase-container">
+                <div class="has-text-centered py-6">
+                    <span class="icon is-large"><i class="fas fa-spinner fa-pulse"></i></span>
+                    <p class="mt-2 has-text-grey">Loading benchmark results...</p>
+                </div>
+            </div>
+            <div class="has-text-centered mt-4">
+                <a href="ui/results.html" class="button is-text is-small">View Full Scoreboard →</a>
+            </div>
+        </div>
+    </section>
+
     <!-- Gallery Section -->
     <section class="section has-background-light">
         <div class="container is-max-desktop">
@@ -332,5 +349,46 @@
             });
         }
     </script>
+
+    <!-- Data Loader -->
+    <script>
+        (function() {
+            const phases = ['p1', 'p2', 'p3', 'p4'];
+            const ts = Date.now();
+            
+            async function loadScripts() {
+                const load = (src) => new Promise((resolve, reject) => {
+                    const tag = document.createElement('script');
+                    tag.src = src;
+                    tag.onload = resolve;
+                    tag.onerror = () => reject(new Error(`Failed to load ${src}`));
+                    document.head.appendChild(tag);
+                });
+
+                try {
+                    // Load main DB and phases
+                    await load(`./results/showcase_db.js?v=${ts}`);
+                    await Promise.all(phases.map(p => load(`./results/showcase_db_${p}.js?v=${ts}`)));
+                    console.log('Homepage data loaded successfully.');
+                    window.dispatchEvent(new Event('CG3D_DATA_READY'));
+                } catch (e) {
+                    console.error('Data loading error:', e);
+                }
+            }
+            window._loadData = loadScripts;
+            loadScripts();
+        })();
+    </script>
+
+    <!-- Three.js Import Map -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module" src="js/home_table.js"></script>
 </body>
 </html>
