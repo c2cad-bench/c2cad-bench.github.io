@@ -1,0 +1,76 @@
+/**
+ * Home Page Results Table Styles
+ */
+
+.showcase-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 2rem;
+    background: white;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.showcase-table thead th {
+    background: #f8fafc;
+    color: var(--text-main);
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    padding: 1.25rem 1rem;
+    border-bottom: 2px solid #edf2f7;
+}
+
+.showcase-table tbody td {
+    vertical-align: middle;
+    padding: 0.5rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.showcase-table .task-info {
+    padding-left: 1.5rem;
+    min-width: 180px;
+}
+
+.showcase-table .task-info strong {
+    color: var(--accent);
+    font-size: 1rem;
+}
+
+.home-vp {
+    width: 200px;
+    height: 180px;
+    margin: 0 auto;
+    background: radial-gradient(circle at center, #fdfdfd 0%, #f7f9fc 100%);
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    cursor: grab;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.home-vp:active {
+    cursor: grabbing;
+}
+
+.home-vp:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+/* Responsive Table */
+@media screen and (max-width: 1024px) {
+    .home-vp {
+        width: 150px;
+        height: 140px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .showcase-table {
+        display: block;
+        overflow-x: auto;
+    }
+}
