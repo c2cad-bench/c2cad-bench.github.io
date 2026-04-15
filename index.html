@@ -3,132 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C2CAD-Bench: A Large-Scale Benchmark for 3D Spatial Reasoning</title>
-    <meta name="description" content="C2CAD-Bench evaluates the multi-step spatial reasoning capabilities of LLMs in producing deterministic CAD geometry.">
+    <title>V2CAD: Voxel-to-CAD Reasoning Benchmark</title>
+    <meta name="description" content="V2CAD evaluates the multi-step spatial reasoning capabilities of LLMs in producing deterministic CAD geometry.">
     
-    <!-- Fonts -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&family=Quicksand:wght@300;400;500;600;700&family=Roboto+Mono&display=swap" rel="stylesheet">
     
+    <!-- Frameworks -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css">
+    <script src="https://kit.fontawesome.com/5fd1dd8417.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" />
+
     <!-- Styles -->
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/landing.css">
+    <link rel="stylesheet" href="css/v2cad.css">
 </head>
 <body>
-    <div id="progress-bar"></div>
 
-    <nav>
-        <div class="container">
-            <a href="#" class="nav-brand">C2CAD-Bench</a>
-            <div class="nav-links">
-                <a href="#abstract">Abstract</a>
-                <a href="#about">About</a>
-                <a href="#benchmarks">Benchmarks</a>
-                <a href="#analysis">Analysis</a>
-                <a href="./ui/results.html">Scoreboard</a>
-                <a href="./ui/visualizer.html" class="cta">3D Visualizer</a>
+    <!-- Hero Section -->
+    <section class="hero pb-6">
+        <div class="hero-body">
+            <div class="container is-max-desktop has-text-centered">
+                <h1 class="title is-1 publication-title">
+                    V2CAD: Voxel-to-CAD 3D Spatial Reasoning Benchmark
+                </h1>
+                
+                <div class="is-size-5 publication-authors">
+                    <span class="author-block">Anonymous Authors</span>
+                </div>
+
+                <div class="is-size-5 publication-institute mt-2">
+                    <span class="author-block">NeurIPS 2026 Submission</span>
+                </div>
+
+                <div class="link-blocks">
+                    <a class="button link-button" href="https://arxiv.org/abs/xxxx.xxxxx">
+                        <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                        <span>Paper</span>
+                    </a>
+                    <a class="button link-button" href="https://github.com/v2cad/v2cad">
+                        <span class="icon"><i class="fab fa-github"></i></span>
+                        <span>Code</span>
+                    </a>
+                    <a class="button link-button" href="./ui/visualizer.html">
+                        <span class="icon"><i class="fas fa-cube"></i></span>
+                        <span>3D Visualizer</span>
+                    </a>
+                    <a class="button link-button" href="./ui/results.html">
+                        <span class="icon"><i class="fas fa-chart-line"></i></span>
+                        <span>Scoreboard</span>
+                    </a>
+                </div>
             </div>
         </div>
-    </nav>
+    </section>
 
-    <div class="hero">
-        <canvas id="hero-canvas"></canvas>
-        <div class="container">
-            <span class="hero-badge">Frontier AI Benchmark</span>
-            <h1>C2CAD-Bench</h1>
-            <p class="subtitle">A Large-Scale Benchmark for 3D Spatial Reasoning and CAD Geometry Generation</p>
-            
-            <div class="authors">
-                Anonymous Authors
-            </div>
-
-            <div class="hero-buttons">
-                <a href="./ui/results.html" class="btn btn-primary">Evaluation Scoreboard</a>
-                <a href="./ui/visualizer.html" class="btn btn-secondary">Interactive 3D Evaluator</a>
-            </div>
-
-            <figure class="hero-fig reveal reveal-up">
-                <img src="results/fig1_overall_rankings.png" alt="Overall Model Rankings Heatmap">
-                <figcaption style="margin-top: 16px; font-size: 15px; color: var(--text-light);"><strong>Figure 1:</strong> Comparative evaluation of 13 frontier Large Language Models across the C2CAD-Bench spectrum.</figcaption>
+    <!-- Teaser Section -->
+    <section class="section pt-0">
+        <div class="container is-max-desktop has-text-centered">
+            <figure class="reveal">
+                <img src="results/fig1_overall_rankings.png" alt="Overall Model Rankings Heatmap" style="width: 100%; border-radius: 8px;">
+                <figcaption class="mt-4 has-text-grey">
+                    <strong>Figure 1:</strong> Comparative evaluation of 13 frontier Large Language Models across the V2CAD spectrum.
+                </figcaption>
             </figure>
         </div>
-    </div>
+    </section>
 
-    <section id="abstract" class="section-padding reveal reveal-up">
-        <div class="container">
-            <div class="abstract-container">
-                <h2 class="abstract-title">Abstract</h2>
-                <p class="abstract-text">
-                    AI-assisted CAD design relies on a prompt-to-code-to-CAD pipeline, where an LLM generates code for a CAD engine from a natural-language description. Existing benchmarks combine programming proficiency with spatial understanding; reaching a syntactically correct script that places every part at the wrong coordinate passes all execution-based checks. Moreover, image-based evaluation cannot inspect internal geometry such as lattice connectivity or clearance fits. We introduce <strong>C2CAD-BENCH</strong>, a benchmark that isolates 3D spatial reasoning from code-generation proficiency by removing the code layer entirely. Models receive a natural-language engineering specification and must produce a JSON array of geometric primitives, scored deterministically against parametric ground truth without code execution or rendering. Prompts follow a zero-scaffolding methodology that supplies only physical intent, requiring models to derive every coordinate from first principles. The benchmark comprises 25 test families across four phases of cognitive demand (75 test cases, up to 805 shapes), evaluated with a gated three-axis scoring pipeline (Coverage, Geometry, Semantic). Evaluation of 13 frontier LLMs from five providers reveals a persistent coverage–geometry gap of roughly 19 points, systematic primitive type confusion, and that constraint complexity rather than shape count drives difficulty.
+    <!-- Abstract Section -->
+    <section class="section has-background-light">
+        <div class="container is-max-desktop">
+            <h2 class="section-title">Abstract</h2>
+            <div class="content abstract-content">
+                <p>
+                    AI-assisted CAD design relies on a prompt-to-code-to-CAD pipeline, where an LLM generates code for a CAD engine from a natural-language description. Existing benchmarks combine programming proficiency with spatial understanding; reaching a syntactically correct script that places every part at the wrong coordinate passes all execution-based checks. Moreover, image-based evaluation cannot inspect internal geometry such as lattice connectivity or clearance fits. We introduce <strong>V2CAD-BENCH</strong> (formerly C2CAD), a benchmark that isolates 3D spatial reasoning from code-generation proficiency by removing the code layer entirely. Models receive a natural-language engineering specification and must produce a JSON array of geometric primitives, scored deterministically against parametric ground truth without code execution or rendering. Prompts follow a zero-scaffolding methodology that supplies only physical intent, requiring models to derive every coordinate from first principles. The benchmark comprises 25 test families across four phases of cognitive demand (75 test cases, up to 805 shapes), evaluated with a gated three-axis scoring pipeline (Coverage, Geometry, Semantic). Evaluation of 13 frontier LLMs from five providers reveals a persistent coverage–geometry gap of roughly 19 points, systematic primitive type confusion, and that constraint complexity rather than shape count drives difficulty.
                 </p>
             </div>
         </div>
     </section>
 
-    <section id="about" class="section-padding">
-        <div class="container">
-            <div class="section-header">
-                <h2>Benchmark Objectives</h2>
-                <p>Establishing a rigorous evaluation framework for LLM-based parametric CAD generation.</p>
+    <!-- Methodology Section -->
+    <section class="section">
+        <div class="container is-max-desktop">
+            <h2 class="section-title">Benchmark Structure & Objectives</h2>
+            <div class="columns is-vcentered">
+                <div class="column is-7">
+                    <div class="content">
+                        <p>V2CAD evaluates the multi-step spatial reasoning capabilities of LLMs in generating deterministic CAD geometry. The benchmark requires models to map high-level engineering specifications to precise parametric primitives.</p>
+                        <p>Unlike previous shape-focused benchmarks, V2CAD emphasizes:</p>
+                        <ul>
+                            <li><strong>Geometric Constraints:</strong> Concentricity, patterns, and pathing.</li>
+                            <li><strong>Topological Validity:</strong> Connectivity and manifold verification.</li>
+                            <li><strong>Reasoning Depth:</strong> Multi-phase complexity from primitives to functional assemblies.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="column">
+                    <figure class="reveal">
+                        <img src="results/fig2_score_components.png" alt="Metric Decomposition">
+                    </figure>
+                </div>
             </div>
 
-            <div class="methodology-box">
-                <div class="methodology-text">
-                    <p>C2CAD-Bench evaluates the multi-step spatial reasoning capabilities of LLMs in generating deterministic CAD geometry. The benchmark requires models to map high-level engineering specifications to precise parametric primitives.</p>
-                    <p>Unlike previous shape-focused benchmarks, C2CAD-Bench emphasizes:</p>
-                    <ul style="font-size: 16px; color: var(--text-muted); margin-top: 20px;">
-                        <li style="margin-bottom: 12px;"><strong>Geometric Constraints:</strong> Concentricity, patterns, and pathing.</li>
-                        <li style="margin-bottom: 12px;"><strong>Topological Validity:</strong> Connectivity and manifold verification.</li>
-                        <li style="margin-bottom: 12px;"><strong>Reasoning Depth:</strong> Multi-phase complexity from primitives to functional assemblies.</li>
-                    </ul>
+            <div class="columns is-multiline mt-6">
+                <div class="column is-4 has-text-centered">
+                    <div class="box">
+                        <h3 class="title is-4">75 Test Cases</h3>
+                        <p>Covering 25 distinct test families across three complexity levels (Primitive, Structure, Assembly).</p>
+                    </div>
                 </div>
-                <div class="methodology-img">
-                    <img src="results/fig2_score_components.png" alt="Metric Decomposition" style="width: 100%; border-radius: 12px;">
+                <div class="column is-4 has-text-centered">
+                    <div class="box">
+                        <h3 class="title is-4">13 Frontier Models</h3>
+                        <p>Evaluating state-of-the-art models including Gemini, GPT-4, Claude 3.5, and DeepSeek.</p>
+                    </div>
                 </div>
-            </div>
-
-            <div class="highlights-grid">
-                <div class="highlight-item reveal reveal-up" style="transition-delay: 0.1s;">
-                    <h3>75 Test Cases</h3>
-                    <p>Covering 25 distinct test families across three complexity levels (Primitive, Structure, Assembly).</p>
-                </div>
-                <div class="highlight-item reveal reveal-up" style="transition-delay: 0.2s;">
-                    <h3>13 Frontier Models</h3>
-                    <p>Evaluating state-of-the-art models including Gemini, GPT-4, Claude 3.5, and DeepSeek.</p>
-                </div>
-                <div class="highlight-item reveal reveal-up" style="transition-delay: 0.3s;">
-                    <h3>Tri-Partite Scoring</h3>
-                    <p>Automated validation of Coverage (20%), Geometry (30%), and Semantic Validity (50%).</p>
+                <div class="column is-4 has-text-centered">
+                    <div class="box">
+                        <h3 class="title is-4">Tri-Partite Scoring</h3>
+                        <p>Automated validation of Coverage (20%), Geometry (30%), and Semantic Validity (50%).</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="benchmarks" class="section-padding" style="background-color: var(--bg-subtle);">
-        <div class="container">
-            <div class="section-header">
-                <h2>Benchmark Structure & Phases</h2>
-                <p>Tracking model performance across dimensionality and constraint complexity.</p>
-            </div>
-
-            <figure class="reveal reveal-up" style="margin-bottom: 80px;">
-                <img src="results/fig4_phase_performance.png" alt="Phase Performance Analysis" style="width: 100%; border-radius: var(--radius); box-shadow: var(--card-shadow); background: white;">
-                <figcaption style="margin-top: 16px; font-size: 15px; text-align: center; color: var(--text-light);"><strong>Figure 2:</strong> Model performance distributions across the four benchmark phases, highlighting the transition from basic forms to engineering assemblies.</figcaption>
+    <!-- Detailed Performance section -->
+    <section class="section has-background-light">
+        <div class="container is-max-desktop">
+            <h2 class="section-title">Detailed Performance Analysis</h2>
+            
+            <figure class="reveal has-text-centered">
+                <img src="results/fig4_phase_performance.png" alt="Phase Performance Analysis" style="max-width: 900px;">
+                <figcaption class="mt-4 has-text-grey">
+                    <strong>Figure 2:</strong> Model performance distributions across the four benchmark phases, highlighting the transition from basic forms to engineering assemblies.
+                </figcaption>
             </figure>
 
-            <div class="analysis-row">
-                <div class="analysis-item reveal reveal-up">
-                    <h3 style="margin-bottom: 24px;">Spatial Reasoning Signatures</h3>
-                    <img src="results/fig9_radar_profiles.png" alt="Radar Profiles" style="width: 100%; border-radius: var(--radius); border: 1px solid var(--border); background: white;">
-                    <p style="font-size: 14px; color: var(--text-muted); margin-top: 20px;">
+            <div class="columns is-multiline mt-6">
+                <div class="column is-6">
+                    <h3 class="title is-4 has-text-centered">Spatial Reasoning Signatures</h3>
+                    <figure class="reveal">
+                        <img src="results/fig9_radar_profiles.png" alt="Radar Profiles">
+                    </figure>
+                    <p class="has-text-grey-dark mt-4">
                         Radar profiles reveal the "spatial signature" of each model family, identifying distinctive reasoning biases and architectural strengths.
                     </p>
                 </div>
-                <div class="analysis-item reveal reveal-up" style="transition-delay: 0.2s;">
-                    <h3 style="margin-bottom: 24px;">Performance Distributions</h3>
-                    <img src="results/fig11_violin_distributions.png" alt="Violin Distributions" style="width: 100%; border-radius: var(--radius); border: 1px solid var(--border); background: white;">
-                    <p style="font-size: 14px; color: var(--text-muted); margin-top: 20px;">
+                <div class="column is-6">
+                    <h3 class="title is-4 has-text-centered">Performance Distributions</h3>
+                    <figure class="reveal">
+                        <img src="results/fig11_violin_distributions.png" alt="Violin Distributions">
+                    </figure>
+                    <p class="has-text-grey-dark mt-4">
                         Statistical breakdown of score density across different model vendors, showing the stability and ceiling of current spatial models.
                     </p>
                 </div>
@@ -136,71 +164,77 @@
         </div>
     </section>
 
-    <section id="analysis" class="section-padding">
-        <div class="container">
-            <div class="section-header">
-                <h2>Scaling & Failure Modes</h2>
-                <p>Understanding the limits of current topological and geometric production.</p>
-            </div>
-
-            <div class="analysis-row">
-                <div class="analysis-item">
-                    <h3>Difficulty Scaling</h3>
-                    <img src="results/fig5_difficulty_scaling.png" alt="Difficulty Scaling" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);">
-                    <p style="font-size: 14px; color: var(--text-muted); margin-top: 16px;">Tracking the degradation of coverage and semantic logic as tasks transition from single primitives to multi-part engineering systems.</p>
+    <!-- Scaling Section -->
+    <section class="section">
+        <div class="container is-max-desktop">
+            <h2 class="section-title">Scaling & Failure Modes</h2>
+            <div class="columns">
+                <div class="column">
+                    <h3 class="title is-5">Difficulty Scaling</h3>
+                    <img src="results/fig5_difficulty_scaling.png" alt="Difficulty Scaling">
+                    <p class="is-size-6 mt-2">Tracking the degradation of coverage and semantic logic as tasks transition from single primitives to multi-part engineering systems.</p>
                 </div>
-                <div class="analysis-item">
-                    <h3>Hallucination Profiles</h3>
-                    <img src="results/fig13_hallucination_analysis.png" alt="Hallucination Analysis" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);">
-                    <p style="font-size: 14px; color: var(--text-muted); margin-top: 16px;">Distinguishing between structural under-production and excessive "geometric hallucinations" during complex pathing tasks.</p>
+                <div class="column">
+                    <h3 class="title is-5">Hallucination Profiles</h3>
+                    <img src="results/fig13_hallucination_analysis.png" alt="Hallucination Analysis">
+                    <p class="is-size-6 mt-2">Distinguishing between structural under-production and excessive "geometric hallucinations" during complex pathing tasks.</p>
                 </div>
             </div>
-
-            <figure style="margin-top: 60px;">
-                <img src="results/fig3_family_heatmap.png" alt="Global Heatmap" style="width: 100%; border-radius: var(--radius); box-shadow: var(--card-shadow); background: white;">
-                <figcaption style="margin-top: 16px; font-size: 15px; text-align: center; color: var(--text-light);"><strong>Figure 3:</strong> Global heatmap of global scores across all 25 test families, revealing specific failure modes in engineering scenarios.</figcaption>
+            
+            <figure class="reveal mt-6 has-text-centered">
+                <img src="results/fig3_family_heatmap.png" alt="Global Heatmap">
+                <figcaption class="has-text-grey mt-2"><strong>Figure 3:</strong> Global heatmap of global scores across all 25 test families, revealing specific failure modes in engineering scenarios.</figcaption>
             </figure>
         </div>
     </section>
 
-    <section id="gallery" class="section-padding" style="background-color: var(--bg-subtle);">
-        <div class="container">
-            <div class="section-header">
-                <h2>Showcase Gallery</h2>
-                <p>Visual examples of successful and failed parametric reconstructions.</p>
-            </div>
-
-            <div class="gallery-grid">
-                <div class="gallery-card reveal reveal-up">
-                    <div class="img-container">
-                        <img src="results/fig17_spiral_staircase_comparison.png" alt="Spiral Staircase">
-                    </div>
-                    <div class="gallery-info">
-                        <h4>Spiral Staircase (Phase 1)</h4>
-                        <p style="font-size: 14px; color: var(--text-muted); margin-top: 8px;">Tests trigonometric accuracy and polar pattern repetition in vertical space.</p>
+    <!-- Gallery Section -->
+    <section class="section has-background-light">
+        <div class="container is-max-desktop">
+            <h2 class="section-title">Showcase Gallery</h2>
+            <div class="columns is-centered">
+                <div class="column is-5">
+                    <div class="card">
+                        <div class="card-image">
+                            <figure class="image">
+                                <img src="results/fig17_spiral_staircase_comparison.png" alt="Spiral Staircase">
+                            </figure>
+                        </div>
+                        <div class="card-content">
+                            <p class="title is-5">Spiral Staircase (Phase 1)</p>
+                            <p class="subtitle is-6">Tests trigonometric accuracy and polar pattern repetition in vertical space.</p>
+                        </div>
                     </div>
                 </div>
-                <div class="gallery-card reveal reveal-up" style="transition-delay: 0.2s;">
-                    <div class="img-container">
-                        <img src="results/fig21_radiolarian_skeleton_comparison.png" alt="Radiolarian Skeleton">
-                    </div>
-                    <div class="gallery-info">
-                        <h4>Radiolarian Skeleton (Phase 4)</h4>
-                        <p style="font-size: 14px; color: var(--text-muted); margin-top: 8px;">Tests high-order recursive patterns and geodesic frame generation in bio-inspired CAD.</p>
+                <div class="column is-5">
+                    <div class="card">
+                        <div class="card-image">
+                            <figure class="image">
+                                <img src="results/fig21_radiolarian_skeleton_comparison.png" alt="Radiolarian Skeleton">
+                            </figure>
+                        </div>
+                        <div class="card-content">
+                            <p class="title is-5">Radiolarian Skeleton (Phase 4)</p>
+                            <p class="subtitle is-6">Tests high-order recursive patterns and geodesic frame generation in bio-inspired CAD.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="citation-section" id="citation">
-        <div class="container" style="max-width: 800px;">
-            <h2>Citation</h2>
-            <div class="citation-box">
-                <button class="copy-btn" onclick="copyCitation()">Copy BibTeX</button>
-                <pre id="bibtex" style="margin: 0;">@article{c2cad2026,
-  title={C2CAD-Bench: A Large-Scale Benchmark for 3D Spatial Reasoning in CAD},
-  author={C2CAD-Bench Research Team},
+    <!-- BibTeX Section -->
+    <section class="section" id="citation">
+        <div class="container is-max-desktop">
+            <h2 class="section-title">Citation</h2>
+            <div class="bibtex-box">
+                <button class="button is-light copy-btn" onclick="copyCitation()">
+                    <span class="icon is-small"><i class="fas fa-copy"></i></span>
+                    <span>Copy</span>
+                </button>
+                <pre id="bibtex">@article{v2cad2026,
+  title={V2CAD: A Large-Scale Benchmark for Voxel-to-CAD Spatial Reasoning},
+  author={Anonymous Authors},
   journal={arXiv preprint arXiv:26xx.xxxxx},
   year={2026}
 }</pre>
@@ -208,29 +242,19 @@
         </div>
     </section>
 
-    <footer>
-        <div class="footer-container">
-            <a href="#" class="footer-logo">C2CAD-Bench</a>
-            <div class="footer-links">
-                <a href="#abstract">Abstract</a>
-                <a href="#about">About</a>
-                <a href="./ui/results.html">Scoreboard</a>
-                <a href="./ui/visualizer.html">3D Viewer</a>
-            </div>
-            <p class="footer-copy">&copy; 2026 C2CAD-Bench Research Team. Released under the MIT License.</p>
+    <footer class="footer">
+        <div class="container has-text-centered">
+            <p>
+                <strong>V2CAD</strong> by Anonymous Authors. 
+                Released under the <a href="http://opensource.org/licenses/mit-license.php">MIT License</a>.
+            </p>
+            <p class="mt-2">
+                &copy; 2026 V2CAD Research Team.
+            </p>
         </div>
     </footer>
 
-    <script src="js/background.js"></script>
     <script>
-        // Reading Progress
-        window.addEventListener('scroll', () => {
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = (winScroll / height) * 100;
-            document.getElementById("progress-bar").style.width = scrolled + "%";
-        });
-
         // Scroll Reveal logic
         const observerOptions = {
             threshold: 0.1,
@@ -250,35 +274,11 @@
         function copyCitation() {
             const bib = document.getElementById('bibtex').innerText;
             navigator.clipboard.writeText(bib).then(() => {
-                const btn = document.querySelector('.copy-btn');
+                const btn = document.querySelector('.copy-btn span:last-child');
                 btn.innerText = 'Copied!';
-                setTimeout(() => btn.innerText = 'Copy BibTeX', 2000);
+                setTimeout(() => btn.innerText = 'Copy', 2000);
             });
         }
-
-        // Active nav highlighting
-        window.addEventListener('scroll', () => {
-            const sections = document.querySelectorAll('section, .hero');
-            const navLinks = document.querySelectorAll('.nav-links a');
-            let current = '';
-
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (window.pageYOffset >= sectionTop - 150) {
-                    current = section.getAttribute('id') || '';
-                }
-            });
-
-            navLinks.forEach(link => {
-                link.classList.remove('active-link');
-                const href = link.getAttribute('href');
-                if (href.includes(current) && current !== '') {
-                    if (!link.classList.contains('cta')) {
-                        link.classList.add('active-link');
-                    }
-                }
-            });
-        });
     </script>
 </body>
 </html>
