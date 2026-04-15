@@ -14,6 +14,7 @@
     <script src="https://kit.fontawesome.com/5fd1dd8417.js" crossorigin="anonymous"></script>
 
     <!-- Styles -->
+    <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/c2cad.css">
     <link rel="stylesheet" href="../css/visualizer.css">
     
@@ -54,31 +55,31 @@
         })();
     </script>
 </head>
-<body class="dark-theme">
+<body class="light-theme">
     <canvas id="main-canvas"></canvas>
 
-    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="background: rgba(10, 10, 10, 0.8) !important; backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.1);">
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="background: rgba(255, 255, 255, 0.8) !important; backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.1);">
         <div class="container">
             <div class="navbar-brand">
-                <a class="navbar-item" href="../index.html" style="font-family:'Josefin Sans'; font-weight:700; font-size:1.5rem; color:#fff;">
+                <a class="navbar-item" href="../index.html" style="font-family:'Josefin Sans'; font-weight:700; font-size:1.5rem; color:var(--accent);">
                     C2CAD-Bench
                 </a>
             </div>
             <div class="navbar-menu">
                 <div class="navbar-end">
-                    <a class="navbar-item has-text-white" href="../index.html">Abstract</a>
-                    <a class="navbar-item has-text-white" href="../index.html#benchmarks">Benchmarks</a>
-                    <a class="navbar-item has-text-white" href="results.html">Scoreboard</a>
-                    <a class="navbar-item has-text-white is-active" href="visualizer.html">3D Visualizer</a>
+                    <a class="navbar-item" href="../index.html">Abstract</a>
+                    <a class="navbar-item" href="../index.html#benchmarks">Benchmarks</a>
+                    <a class="navbar-item" href="results.html">Scoreboard</a>
+                    <a class="navbar-item is-active" href="visualizer.html">3D Visualizer</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div id="ui-controls" class="is-flex is-align-items-center is-justify-content-space-between p-4" style="background: rgba(20, 20, 20, 0.7); border-radius: 12px; margin: 20px; border: 1px solid rgba(255,255,255,0.1);">
+    <div id="ui-controls" class="is-flex is-align-items-center is-justify-content-space-between p-4" style="background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); border-radius: 12px; margin: 20px; border: 1px solid rgba(0,0,0,0.1); box-shadow: var(--card-shadow);">
         <div class="field is-horizontal is-marginless">
             <div class="field-label is-normal">
-                <label class="label has-text-white" style="font-family:'Quicksand'; font-weight:600;">Model Selection:</label>
+                <label class="label" style="font-family:'Quicksand'; font-weight:600; color: var(--text-main);">Model Selection:</label>
             </div>
             <div class="field-body">
                 <div class="control">
@@ -89,8 +90,8 @@
             </div>
         </div>
         <div class="is-flex is-align-items-center" style="gap:16px;">
-            <button onclick="location.reload(true)" class="button is-small is-rounded is-dark">↻ Reload</button>
-            <div id="overallScore" class="overall-badge" style="font-family:'Josefin Sans';"></div>
+            <button onclick="location.reload(true)" class="button is-small is-rounded is-light">↻ Reload</button>
+            <div id="overallScore" class="overall-badge" style="font-family:'Josefin Sans'; color: var(--accent);"></div>
         </div>
     </div>
 
