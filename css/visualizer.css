@@ -14,9 +14,9 @@
     top: 57px;
     z-index: 900;
     padding: 16px 40px;
-    background: rgba(15, 23, 42, 0.95);
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--dark-border);
+    border-bottom: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -26,15 +26,15 @@
 
 #ui-controls h3 {
     font-size: 15px;
-    color: var(--dark-text-muted);
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.1em;
 }
 
 select {
-    background: #1e293b;
-    color: white;
-    border: 1px solid var(--dark-border);
+    background: white;
+    color: var(--text-main);
+    border: 1px solid var(--border);
     padding: 10px 20px;
     border-radius: 8px;
     font-size: 14px;
@@ -46,7 +46,7 @@ select {
 }
 
 select:hover {
-    border-color: var(--dark-accent);
+    border-color: var(--accent);
 }
 
 .overall-badge {
@@ -54,9 +54,9 @@ select:hover {
     border-radius: 8px;
     font-size: 13px;
     font-weight: 700;
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    background: rgba(16, 185, 129, 0.12);
-    color: #10b981;
+    border: 1px solid var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
     display: none;
 }
 
@@ -65,8 +65,8 @@ select:hover {
     position: sticky;
     top: 130px;
     z-index: 800;
-    background: rgba(11, 17, 33, 0.98);
-    border-bottom: 1px solid var(--dark-border);
+    background: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid var(--border);
     display: flex;
     padding: 0 40px;
 }
@@ -93,13 +93,13 @@ select:hover {
     gap: 16px;
     padding: 12px 0;
     margin-bottom: 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: 1px solid var(--border);
 }
 
 .family-name {
     font-size: 1.25rem;
     font-weight: 800;
-    color: white;
+    color: var(--text-main);
 }
 
 .fam-phase-pill {
@@ -109,8 +109,8 @@ select:hover {
     letter-spacing: 0.05em;
     padding: 3px 10px;
     border-radius: 4px;
-    background: rgba(96, 165, 250, 0.12);
-    color: var(--dark-accent);
+    background: var(--accent-soft);
+    color: var(--accent);
 }
 
 /* --- Viewports --- */
@@ -127,12 +127,13 @@ select:hover {
 }
 
 .viewport-card {
-    background: rgba(30, 41, 59, 0.5);
-    border: 1px solid var(--dark-border);
+    background: white;
+    border: 1px solid var(--border);
     border-radius: var(--radius);
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    box-shadow: var(--card-shadow);
 }
 
 .card-header {
@@ -140,8 +141,8 @@ select:hover {
     justify-content: space-between;
     align-items: center;
     padding: 12px 20px;
-    background: rgba(0, 0, 0, 0.3);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border);
 }
 
 .viewport {
@@ -162,8 +163,8 @@ select:hover {
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    background: rgba(0, 0, 0, 0.4);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border);
 }
 
 .vp-btn {
@@ -171,22 +172,22 @@ select:hover {
     border-radius: 6px;
     font-size: 11px;
     font-weight: 600;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--dark-text-muted);
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--text-muted);
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .vp-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: white;
+    background: var(--bg-subtle);
+    color: var(--text-main);
 }
 
 .vp-btn.active {
-    background: rgba(96, 165, 250, 0.2);
-    border-color: var(--dark-accent);
-    color: var(--dark-accent);
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
 /* --- Level Buttons --- */
@@ -201,21 +202,21 @@ select:hover {
     border-radius: 6px;
     font-size: 11px;
     font-weight: 700;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.03);
-    color: var(--dark-text-muted);
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--text-muted);
     cursor: pointer;
 }
 
 .lvl-btn.active {
-    background: rgba(96, 165, 250, 0.15);
-    border-color: var(--dark-accent);
-    color: var(--dark-accent);
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
 /* --- Prompt View --- */
 .prompt-container {
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid var(--border);
 }
 
 .prompt-toggle {
@@ -223,8 +224,8 @@ select:hover {
     padding: 10px;
     font-size: 11px;
     font-weight: 700;
-    color: var(--dark-text-muted);
-    background: rgba(0, 0, 0, 0.2);
+    color: var(--text-muted);
+    background: var(--bg-subtle);
     border: none;
     cursor: pointer;
     text-transform: uppercase;
@@ -236,11 +237,11 @@ select:hover {
     padding: 24px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 13px;
-    color: #cbd5e1;
-    background: #0f172a;
+    color: var(--text-main);
+    background: #f8fafc;
     max-height: 250px;
     overflow-y: auto;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid var(--border);
 }
 
 .score-badge {
