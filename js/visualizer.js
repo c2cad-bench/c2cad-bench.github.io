@@ -26,23 +26,39 @@ const Visualizer = {
     AXIS_MAP: {x:[1,0,0],'+x':[1,0,0],'-x':[-1,0,0],y:[0,1,0],'+y':[0,1,0],'-y':[0,-1,0],z:[0,0,1],'+z':[0,0,1],'-z':[0,0,-1]},
 
     init() {
+        console.log('Visualizer: Initializing Three.js scene...');
         const canvas = document.getElementById('main-canvas');
-        this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, logarithmicDepthBuffer: true });
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
-        this.renderer.toneMapping       = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1.15;
-        this.renderer.outputColorSpace  = THREE.SRGBColorSpace;
-        this.renderer.localClippingEnabled = true;
+        if (!canvas) {
+            console.error('Visualizer Error: main-canvas element not found!');
+            return;
+        }
 
-        this.setupPhaseListeners();
-        this.setupModelSelector();
-        this.animate();
-        
-        // Initial load
-        this.switchPhase(1);
+        try {
+            this.renderer = new THREE.WebGLRenderer({ 
+                canvas, 
+                antialias: true, 
+                alpha: true, 
+                logarithmicDepthBuffer: true,
+                powerPreference: 'high-performance'
+            });
+            this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+            this.renderer.shadowMap.enabled = true;
+            this.renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
+            this.renderer.toneMapping       = THREE.ACESFilmicToneMapping;
+            this.renderer.toneMappingExposure = 1.15;
+            this.renderer.outputColorSpace  = THREE.SRGBColorSpace;
+            this.renderer.localClippingEnabled = true;
+
+            this.setupPhaseListeners();
+            this.setupModelSelector();
+            this.animate();
+            
+            console.log('Visualizer: Scene initialized. Switching to Phase 1...');
+            this.switchPhase(1);
+        } catch (err) {
+            console.error('Visualizer: Critical initialization error:', err);
+        }
     },
 
     setupPhaseListeners() {
@@ -60,6 +76,7 @@ const Visualizer = {
     },
 
     switchPhase(phase) {
+        console.log(`Visualizer: Switching to Phase ${phase}...`);
         this.currentPhase = phase;
         document.querySelectorAll('.phase-tab').forEach(t => t.classList.toggle('active', parseInt(t.dataset.phase) === phase));
         
@@ -68,6 +85,12 @@ const Visualizer = {
             this.populateModelSelector(phaseData.models);
             this.currentModelId = this.currentModelId || document.getElementById('modelSelector').value;
             this.refreshView();
+        } else {
+            console.warn(`Visualizer Warning: Data for Phase ${phase} not found in global scope.`);
+            const content = document.getElementById('content');
+            if (content && content.innerHTML.includes('Preparing')) {
+                content.innerHTML = `<div style="padding:40px; text-align:center; color:var(--dark-text-muted)">Waiting for Phase ${phase} data...</div>`;
+            }
         }
     },
 
@@ -489,8 +512,21 @@ window._togglePrompt = (id) => {
 };
 
 // Handle potential race condition: check if data ready before attaching listener
+console.log('Visualizer: Script loaded. Checking for existing data...');
 if (window.CG3D_P1) {
+    console.log('Visualizer: Data found immediately.');
     Visualizer.init();
 } else {
-    window.addEventListener('CG3D_DATA_READY', () => Visualizer.init());
+    console.log('Visualizer: Waiting for CG3D_DATA_READY event...');
+    window.addEventListener('CG3D_DATA_READY', () => {
+        console.log('Visualizer: CG3D_DATA_READY event received.');
+        Visualizer.init();
+    });
+}
+
+// Trigger data loading if not already triggered (failsafe)
+if (typeof window._loadData === 'function' && !window._dataLoadingTriggered) {
+    console.log('Visualizer: Manually triggering data load...');
+    window._dataLoadingTriggered = true;
+    window._loadData();
 }
