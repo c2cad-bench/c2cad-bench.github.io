@@ -122,8 +122,14 @@
             <p class="subtitle is-5">Multi-step spatial reasoning benchmarks across frontier LLMs.</p>
         </div>
 
-        <div class="model-toggle-bar mb-5" id="model-toggle-bar">
-            <!-- Injected by JS -->
+        <div class="is-flex is-align-items-center is-flex-wrap-wrap mb-5" style="gap: 12px;">
+            <div class="model-toggle-bar" id="model-toggle-bar" style="flex-grow: 1;">
+                <!-- Injected by JS -->
+            </div>
+            <button id="toggle-all-btn" class="button is-small is-rounded is-dark">
+                <span class="icon is-small"><i class="fas fa-eye"></i></span>
+                <span>Toggle All Views</span>
+            </button>
         </div>
 
         <div class="summary-section mb-6">
@@ -134,11 +140,11 @@
 
         <div class="tabs is-boxed mb-5" id="phase-bar-container">
             <ul id="phase-bar">
-                <li class="is-active" data-phase="0"><a>All Phases <span class="tag is-rounded ml-2">75</span></a></li>
-                <li data-phase="1"><a>Phase 1 <span class="tag is-rounded ml-2">18</span></a></li>
-                <li data-phase="2"><a>Phase 2 <span class="tag is-rounded ml-2">18</span></a></li>
-                <li data-phase="3"><a>Phase 3 <span class="tag is-rounded ml-2">18</span></a></li>
-                <li data-phase="4"><a>Phase 4 <span class="tag is-rounded ml-2">21</span></a></li>
+                <li class="is-active phase-tab" data-phase="0"><a>All Phases <span class="tag is-rounded ml-2">75</span></a></li>
+                <li class="phase-tab" data-phase="1"><a>Phase 1 <span class="tag is-rounded ml-2">18</span></a></li>
+                <li class="phase-tab" data-phase="2"><a>Phase 2 <span class="tag is-rounded ml-2">18</span></a></li>
+                <li class="phase-tab" data-phase="3"><a>Phase 3 <span class="tag is-rounded ml-2">18</span></a></li>
+                <li class="phase-tab" data-phase="4"><a>Phase 4 <span class="tag is-rounded ml-2">21</span></a></li>
             </ul>
         </div>
 
@@ -166,19 +172,20 @@
 
     <script src="../js/scoreboard.js"></script>
     <script>
-        // Start loading data
+        // Initialize data loading
         window._loadData();
         
-        // Adjust scoreboard.js expectations if needed
-        // The scoreboard.js might need some tweaks to work with Bulma tabs
-        document.querySelectorAll('#phase-bar li').forEach(tab => {
-            tab.onclick = function() {
-                document.querySelectorAll('#phase-bar li').forEach(t => t.classList.remove('is-active'));
+        // Sync Bulma tabs with Scoreboard state
+        document.querySelectorAll('.phase-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('is-active'));
                 this.classList.add('is-active');
-                // Trigger original logic if it exists
+                
                 const phase = this.getAttribute('data-phase');
-                if (window.filterByPhase) window.filterByPhase(phase);
-            };
+                if (window.Scoreboard && window.Scoreboard.filterByPhase) {
+                    window.Scoreboard.filterByPhase(phase);
+                }
+            });
         });
     </script>
 </body>
