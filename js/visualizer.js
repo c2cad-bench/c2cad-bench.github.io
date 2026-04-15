@@ -26,7 +26,7 @@ const Visualizer = {
     AXIS_MAP: {x:[1,0,0],'+x':[1,0,0],'-x':[-1,0,0],y:[0,1,0],'+y':[0,1,0],'-y':[0,-1,0],z:[0,0,1],'+z':[0,0,1],'-z':[0,0,-1]},
 
     init() {
-        const canvas = document.getElementById('bg-canvas');
+        const canvas = document.getElementById('main-canvas');
         this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, logarithmicDepthBuffer: true });
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.setSize(window.innerWidth, window.innerHeight);
