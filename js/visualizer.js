@@ -431,8 +431,35 @@ const Visualizer = {
         });
     },
 
-    getProvider(m) { return Scoreboard?.getProvider(m) || 'custom'; },
-    prettyModel(m) { return Scoreboard?.getPrettyName(m) || m; },
+    getProvider(m) {
+        if (m.startsWith('gemini')) return 'gemini';
+        if (m.startsWith('claude')) return 'claude';
+        if (m.startsWith('deepseek')) return 'deepseek';
+        if (m.startsWith('gpt') || m.startsWith('openai') || m.startsWith('o1') || m.startsWith('o3')) return 'openai';
+        if (m.startsWith('mistral') || m.startsWith('codestral')) return 'mistral';
+        if (m.startsWith('kimi') || m.startsWith('moonshot')) return 'kimi';
+        return 'custom';
+    },
+
+    prettyModel(m) {
+        const names = {
+            'gemini-2.5-flash':              'Gemini 2.5 Flash',
+            'gemini-2.5-pro':                'Gemini 2.5 Pro',
+            'gemini-3.1-flash-lite-preview': 'Gemini 3.1 Flash-Lite',
+            'gemini-3-flash-preview':        'Gemini 3 Flash',
+            'gemini-3.1-pro-preview':        'Gemini 3.1 Pro',
+            'claude-opus-4-6':               'Claude Opus 4.6',
+            'claude-sonnet-4-6':             'Claude Sonnet 4.6',
+            'deepseek-chat':                 'DeepSeek V3.2',
+            'deepseek-reasoner':             'DeepSeek R1',
+            'gpt-4.1':                       'GPT-4.1',
+            'gpt-5.4':                       'GPT-5.4',
+            'gpt-5.4-mini':                  'GPT-5.4 Mini',
+            'kimi-k2.5':                     'Kimi K2.5',
+        };
+        return names[m] || m;
+    },
+
     scoreColor(v) { return v > 80 ? '#10b981' : v > 40 ? '#f59e0b' : '#f43f5e'; },
 
     updateOverallBadge(data) {
@@ -461,4 +488,9 @@ window._togglePrompt = (id) => {
     el.style.display = el.style.display === 'block' ? 'none' : 'block';
 };
 
-window.addEventListener('CG3D_DATA_READY', () => Visualizer.init());
+// Handle potential race condition: check if data ready before attaching listener
+if (window.CG3D_P1) {
+    Visualizer.init();
+} else {
+    window.addEventListener('CG3D_DATA_READY', () => Visualizer.init());
+}
