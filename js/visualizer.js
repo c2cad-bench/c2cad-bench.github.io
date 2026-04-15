@@ -89,7 +89,7 @@ const Visualizer = {
             console.warn(`Visualizer Warning: Data for Phase ${phase} not found in global scope.`);
             const content = document.getElementById('content');
             if (content && content.innerHTML.includes('Preparing')) {
-                content.innerHTML = `<div style="padding:40px; text-align:center; color:var(--dark-text-muted)">Waiting for Phase ${phase} data...</div>`;
+                content.innerHTML = `<div style="padding:40px; text-align:center; color:var(--text-muted)">Waiting for Phase ${phase} data...</div>`;
             }
         }
     },
@@ -208,8 +208,8 @@ const Visualizer = {
         row.innerHTML = `
             <div class="viewport-card">
                 <div class="card-header">
-                    <span style="font-weight:700;color:#10b981">🏆 Ground Truth</span>
-                    <span style="font-size:11px;color:var(--dark-text-muted)">${g.difficultyLabel} · ${(g.shapes||[]).length} parts</span>
+                    <span style="font-weight:700;color:#059669">🏆 Ground Truth</span>
+                    <span style="font-size:11px;color:var(--text-muted)">${g.difficultyLabel} · ${(g.shapes||[]).length} parts</span>
                 </div>
                 ${this.toolbarHTML(vpGId)}
                 <div class="viewport" id="${vpGId}"></div>
@@ -221,7 +221,7 @@ const Visualizer = {
             <div class="viewport-card">
                 <div class="card-header">
                     <span><span class="provider-dot dot-${prov}"></span> ${this.prettyModel(this.currentModelId)} ${scoreTags}</span>
-                    <span style="font-size:11px;color:var(--dark-text-muted)">${(ai?.shapes||[]).length} parts</span>
+                    <span style="font-size:11px;color:var(--text-muted)">${(ai?.shapes||[]).length} parts</span>
                 </div>
                 ${this.toolbarHTML(vpAId)}
                 <div class="viewport" id="${vpAId}"></div>
@@ -238,7 +238,7 @@ const Visualizer = {
                 <button class="vp-btn" id="cut-${id}">✂ Cut</button>
                 <button class="vp-btn" id="focus-${id}">🎯 Reset</button>
                 <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
-                    <label style="font-size:10px;color:var(--dark-text-muted)">ZOOM</label>
+                    <label style="font-size:10px;color:var(--text-muted)">ZOOM</label>
                     <input type="range" id="zoom-${id}" min="0.2" max="20" step="0.1" value="1" style="width:60px">
                 </div>
             </div>
@@ -248,11 +248,11 @@ const Visualizer = {
     createViewport(el, shapes, isAI, vpId) {
         if (!el) return;
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(isAI ? 0x11080d : 0x08110b);
-        scene.fog = new THREE.FogExp2(scene.background.getHex(), 0.0007);
+        scene.background = new THREE.Color(isAI ? 0xfdfdfe : 0xf8fafc);
+        scene.fog = new THREE.FogExp2(scene.background.getHex(), 0.0004);
         
         this.addLighting(scene);
-        const grid = new THREE.GridHelper(1000, 20, 0x334155, 0x1e293b);
+        const grid = new THREE.GridHelper(1000, 20, 0xcbd5e1, 0xe2e8f0);
         grid.rotation.x = Math.PI/2;
         scene.add(grid);
 
@@ -338,7 +338,7 @@ const Visualizer = {
     },
 
     addLighting(scene) {
-        scene.add(new THREE.HemisphereLight(0xddeeff, 0x0a0a14, 0.5));
+        scene.add(new THREE.HemisphereLight(0xffffff, 0xe2e8f0, 0.8));
         const key = new THREE.DirectionalLight(0xffffff, 2.0);
         key.position.set(120, 80, 200);
         key.castShadow = true;
