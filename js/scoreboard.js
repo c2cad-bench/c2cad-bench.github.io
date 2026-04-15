@@ -71,6 +71,7 @@ const Scoreboard = {
     renderToggleChips() {
         const bar = document.getElementById('model-toggle-bar');
         const toggleAll = document.getElementById('toggle-all-btn');
+        if (!bar) return;
         bar.innerHTML = '<span class="label">Models:</span>';
 
         this.modelIds.forEach(m => {
@@ -83,7 +84,7 @@ const Scoreboard = {
             bar.appendChild(chip);
         });
         
-        bar.appendChild(toggleAll);
+        if (toggleAll) bar.appendChild(toggleAll);
     },
 
     toggleModel(m, chip) {
@@ -248,17 +249,26 @@ const Scoreboard = {
             };
         });
 
-        document.getElementById('toggle-all-btn').onclick = () => {
-            const allVisible = this.visibleModels.size === this.modelIds.length;
-            if (allVisible) {
-                this.visibleModels.clear();
-                this.modelIds.slice(0, this.maxDefaultModels).forEach(m => this.visibleModels.add(m));
-            } else {
-                this.modelIds.forEach(m => this.visibleModels.add(m));
-            }
-            this.renderToggleChips();
-            this.applyColumnVisibility();
-        };
+        const toggleBtn = document.getElementById('toggle-all-btn');
+        if (toggleBtn) {
+            toggleBtn.onclick = () => {
+                const allVisible = this.visibleModels.size === this.modelIds.length;
+                if (allVisible) {
+                    this.visibleModels.clear();
+                    this.modelIds.slice(0, this.maxDefaultModels).forEach(m => this.visibleModels.add(m));
+                } else {
+                    this.modelIds.forEach(m => this.visibleModels.add(m));
+                }
+                this.renderToggleChips();
+                this.applyColumnVisibility();
+            };
+        }
+    },
+
+    // Public alias for HTML interaction
+    filterByPhase(p) {
+        this.activePhase = parseInt(p);
+        this.applyPhaseFilter();
     },
 
     applyPhaseFilter() {
