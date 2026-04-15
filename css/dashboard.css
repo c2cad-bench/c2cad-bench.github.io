@@ -87,6 +87,20 @@
 .dot-mistral { background: #ff4d4d; }
 .dot-kimi { background: #8b5cf6; }
 
+#toggle-all-btn {
+    margin-left: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--dark-bg-subtle);
+    color: var(--dark-text-muted);
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+}
+
+#toggle-all-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
 /* --- Summary Cards --- */
 .summary-section {
     margin-bottom: 40px;
