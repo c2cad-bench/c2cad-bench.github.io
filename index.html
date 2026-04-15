@@ -19,63 +19,47 @@
     <!-- Styles -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/c2cad.css">
+    <link rel="stylesheet" href="css/landing.css">
     <style>
-        body {
-            background-color: var(--dark-bg);
-            color: var(--dark-text);
-        }
-        .hero {
-            background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.1), transparent),
-                        radial-gradient(circle at bottom left, rgba(160, 32, 240, 0.05), transparent);
-        }
         .publication-title {
-            background: linear-gradient(135deg, #fff 0%, var(--dark-accent) 100%);
+            background: linear-gradient(135deg, var(--text-main) 0%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .section.has-background-light {
-            background-color: var(--dark-bg-subtle) !important;
+        .section-title {
+            color: var(--text-main);
+            border-bottom: 2px solid var(--accent);
+            display: inline-block;
+            margin-bottom: 2rem;
         }
-        .box {
-            background-color: rgba(255, 255, 255, 0.03) !important;
-            border: 1px solid var(--dark-border) !important;
-            color: var(--dark-text) !important;
+        .bibtex-box {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 8px;
+            position: relative;
         }
-        .box .title {
-            color: var(--dark-accent) !important;
-        }
-        .box p {
-            color: var(--dark-text-muted) !important;
-        }
-        .card {
-            background-color: var(--dark-bg-subtle) !important;
-            border: 1px solid var(--dark-border) !important;
-        }
-        .card .title { color: #fff !important; }
-        .card .subtitle { color: var(--dark-text-muted) !important; }
-        .abstract-content { color: var(--dark-text-muted); }
-        .section-title { color: #fff; }
-        .footer {
-            background-color: var(--dark-bg) !important;
-            border-top: 1px solid var(--dark-border);
-            color: var(--dark-text-muted);
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
         }
     </style>
 </head>
-<body class="dark-theme">
+<body>
 
-    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="background: rgba(10, 10, 10, 0.8) !important; backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.1);">
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" style="background: rgba(255, 255, 255, 0.8) !important; backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.1);">
         <div class="container">
             <div class="navbar-brand">
-                <a class="navbar-item" href="index.html" style="font-family:'Josefin Sans'; font-weight:700; font-size:1.5rem; color:#fff;">
+                <a class="navbar-item" href="index.html" style="font-family:'Josefin Sans'; font-weight:700; font-size:1.5rem; color:var(--accent);">
                     C2CAD-Bench
                 </a>
             </div>
             <div class="navbar-menu">
                 <div class="navbar-end">
-                    <a class="navbar-item has-text-white is-active" href="index.html">Abstract</a>
-                    <a class="navbar-item has-text-white" href="#benchmarks">Benchmarks</a>
-                    <a class="navbar-item has-text-white" href="ui/results.html">Scoreboard</a>
+                    <a class="navbar-item is-active" href="index.html">Abstract</a>
+                    <a class="navbar-item" href="#benchmarks">Benchmarks</a>
+                    <a class="navbar-item" href="ui/results.html">Scoreboard</a>
                     <div class="navbar-item">
                         <div class="buttons">
                             <a class="button link-button is-rounded" href="ui/visualizer.html">
