@@ -144,14 +144,19 @@
 }
 
 .scoreboard-card th {
-    background: var(--bg-subtle);
-    padding: 12px 16px;
-    font-size: 12px;
+    background: var(--primary); /* Deep Navy */
+    padding: 16px;
+    font-size: 13px;
     font-weight: 700;
-    color: var(--text-main);
-    border-bottom: 2px solid var(--border);
+    color: white !important;
+    border-bottom: 2px solid var(--accent);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
+    vertical-align: middle;
+}
+
+.scoreboard-card th .provider-dot {
+    border: 1px solid rgba(255,255,255,0.4);
 }
 
 .scoreboard-card td {
