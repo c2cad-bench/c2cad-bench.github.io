@@ -113,101 +113,107 @@
         </div>
     </section>
 
-    <!-- Methodology Section -->
-    <section class="section" id="benchmarks">
-        <div class="container is-max-desktop">
-            <h2 class="section-title">Benchmark Structure & Objectives</h2>
-            <div class="content">
+    <!-- Benchmark & Methodology Section -->
+    <section class="section" id="benchmarking">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="text-gradient">Benchmark Structure & Objectives</h2>
+            <div class="content mt-5">
                 <p>C2CAD-Bench evaluates the multi-step spatial reasoning capabilities of LLMs in generating deterministic CAD geometry. The benchmark requires models to map high-level engineering specifications to precise parametric primitives.</p>
                 <p>Unlike previous shape-focused benchmarks, C2CAD-Bench emphasizes:</p>
-                <ul>
-                    <li><strong>Geometric Constraints:</strong> Concentricity, patterns, and pathing.</li>
-                    <li><strong>Topological Validity:</strong> Connectivity and manifold verification.</li>
-                    <li><strong>Reasoning Depth:</strong> Multi-phase complexity from primitives to functional assemblies.</li>
+                <ul class="mt-4">
+                    <li class="mb-3">
+                        <strong style="color: var(--text-main);">Geometric Constraints:</strong> 
+                        <span class="text-muted">Concentricity, patterns, and pathing.</span>
+                    </li>
+                    <li class="mb-3">
+                        <strong style="color: var(--text-main);">Topological Validity:</strong> 
+                        <span class="text-muted">Connectivity and manifold verification.</span>
+                    </li>
+                    <li class="mb-3">
+                        <strong style="color: var(--text-main);">Reasoning Depth:</strong> 
+                        <span class="text-muted">Multi-phase complexity from primitives to functional assemblies.</span>
+                    </li>
                 </ul>
             </div>
 
+            <!-- Stats Bar -->
             <div class="columns is-multiline mt-6">
                 <div class="column is-4 has-text-centered">
-                    <div class="box">
-                        <h3 class="title is-4">75 Test Cases</h3>
-                        <p>Covering 25 distinct test families across three complexity levels (Primitive, Structure, Assembly).</p>
+                    <div class="premium-card p-4">
+                        <h4 class="font-heading" style="color:var(--accent); font-size:1.5rem;">75 Test Cases</h4>
+                        <p class="text-muted" style="font-size:0.9rem;">25 test families across four phases of cognitive demand.</p>
                     </div>
                 </div>
                 <div class="column is-4 has-text-centered">
-                    <div class="box">
-                        <h3 class="title is-4">13 Frontier Models</h3>
-                        <p>Evaluating state-of-the-art models including Gemini, GPT-4, Claude 3.5, and DeepSeek.</p>
+                    <div class="premium-card p-4">
+                        <h4 class="font-heading" style="color:var(--accent); font-size:1.5rem;">20+ LLMs</h4>
+                        <p class="text-muted" style="font-size:0.9rem;">From OpenAI, Anthropic, Google, and DeepSeek.</p>
                     </div>
                 </div>
                 <div class="column is-4 has-text-centered">
-                    <div class="box">
-                        <h3 class="title is-4">Tri-Partite Scoring</h3>
-                        <p>Automated validation of Coverage (20%), Geometry (30%), and Semantic Validity (50%).</p>
+                    <div class="premium-card p-4">
+                        <h4 class="font-heading" style="color:var(--accent); font-size:1.5rem;">Deterministic</h4>
+                        <p class="text-muted" style="font-size:0.9rem;">Scored against parametric ground truth without code execution.</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Showcase Table Section -->
-    <section class="section">
-        <div class="container is-max-desktop">
-            <h2 class="section-title">Live Leaderboard Showcase</h2>
-            <div id="home-showcase-container">
-                <div class="has-text-centered py-6">
-                    <span class="icon is-large"><i class="fas fa-spinner fa-pulse"></i></span>
-                    <p class="mt-2 has-text-grey">Loading benchmark results...</p>
+            <!-- Showcase Table (Logic in home_table.js) -->
+            <div id="home-showcase-container" class="premium-card" style="margin-top: 60px;">
+                <div class="has-text-centered p-6">
+                    <div class="loader-spinner"></div>
+                    <p class="mt-4 text-muted">Loading live benchmark showcase...</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Evaluation Scoreboard Section -->
-    <section class="section has-background-light">
-        <div class="container py-6">
-            <h2 class="section-title">Evaluation Scoreboard</h2>
-            <p class="subtitle is-5 mb-5">Experimental results across four phases of cognitive demand.</p>
-            
-            <div class="is-flex is-align-items-center is-flex-wrap-wrap mb-5" style="gap: 12px;">
-                <div class="model-toggle-bar" id="model-toggle-bar" style="flex-grow: 1;">
+        <!-- Evaluation Scoreboard Section -->
+        <section class="section" id="scoreboard" style="background: var(--bg-subtle);">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="text-gradient">Leaderboard & Global Evaluation</h2>
+                    <p>Benchmark results across 20+ state-of-the-art LLMs, evaluated on spatial fidelity, topological correctness, and prompt adherence.</p>
+                </div>
+
+                <!-- Tabs & Controls -->
+                <div class="model-toggle-bar" id="model-toggle-bar">
                     <!-- Injected by JS -->
                 </div>
-                <button id="toggle-all-btn" class="button is-small is-rounded is-dark">
-                    <span class="icon is-small"><i class="fas fa-eye"></i></span>
-                    <span>Toggle All Views</span>
-                </button>
-            </div>
 
-            <div class="summary-section mb-6">
-                <div class="summary-row" id="summary-row" style="display: flex; overflow-x: auto; gap: 16px; padding-bottom: 20px;">
+                <div class="summary-row" id="summary-row">
                     <!-- Injected by JS -->
                 </div>
-            </div>
 
-            <div class="tabs is-boxed mb-5" id="phase-bar-container">
-                <ul id="phase-bar-list">
-                    <li class="is-active phase-tab" data-phase="0"><a>All Phases <span class="tag is-rounded ml-2">75</span></a></li>
-                    <li class="phase-tab" data-phase="1"><a>Phase 1 <span class="tag is-rounded ml-2">18</span></a></li>
-                    <li class="phase-tab" data-phase="2"><a>Phase 2 <span class="tag is-rounded ml-2">18</span></a></li>
-                    <li class="phase-tab" data-phase="3"><a>Phase 3 <span class="tag is-rounded ml-2">18</span></a></li>
-                    <li class="phase-tab" data-phase="4"><a>Phase 4 <span class="tag is-rounded ml-2">21</span></a></li>
-                </ul>
-            </div>
+                <div class="phase-bar" id="phase-bar-container">
+                    <div class="phase-tab is-active" data-phase="0">All Phases <span class="badge">75</span></div>
+                    <div class="phase-tab" data-phase="1">Phase 1 <span class="badge">18</span></div>
+                    <div class="phase-tab" data-phase="2">Phase 2 <span class="badge">18</span></div>
+                    <div class="phase-tab" data-phase="3">Phase 3 <span class="badge">18</span></div>
+                    <div class="phase-tab" data-phase="4">Phase 4 <span class="badge">21</span></div>
+                </div>
 
-            <div class="scoreboard-card" style="background: white; border-radius: 12px; border: 1px solid var(--border); overflow-x: auto;">
-                <table class="table is-fullwidth">
-                    <thead id="table-head"></thead>
-                    <tbody id="table-body">
-                        <tr><td colspan="100%" style="text-align:center; padding: 100px; color:#94a3b8;">
-                            <span class="icon is-large mb-4"><i class="fas fa-spinner fa-pulse"></i></span><br>
-                            Loading evaluation data...
-                        </td></tr>
-                    </tbody>
-                </table>
+                <!-- Embedded Dashboard -->
+                <div class="scoreboard-card premium-card">
+                    <table class="table is-fullwidth">
+                        <thead id="table-head"></thead>
+                        <tbody id="table-body">
+                            <tr><td colspan="100%" class="has-text-centered" style="padding: 100px; color: var(--text-muted);">
+                                <div class="loader-spinner"></div>
+                                <p class="mt-4">Loading evaluation data...</p>
+                            </td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="has-text-centered mt-6">
+                    <a href="ui/results.html" class="btn-premium">
+                        View Detailed Metrics <span>&rarr;</span>
+                    </a>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
     <!-- Teaser Section -->
     <section class="section">
@@ -235,34 +241,28 @@
 
 
 
-    <!-- BibTeX Section -->
-    <section class="section" id="citation">
-        <div class="container is-max-desktop">
-            <h2 class="section-title">Citation</h2>
-            <div class="bibtex-box">
-                <button class="button is-light copy-btn" onclick="copyCitation()">
-                    <span class="icon is-small"><i class="fas fa-copy"></i></span>
-                    <span>Copy</span>
-                </button>
-                <pre id="bibtex">@article{c2cad2026,
+        <!-- Citation Section -->
+        <section class="section" id="citation">
+            <div class="container">
+                <div class="section-header">
+                    <h2>BibTeX Citation</h2>
+                    <p>If you find C2CAD-Bench useful in your research, please cite our work.</p>
+                </div>
+                <div class="bibtex-box glassmorphism">
+<pre id="bibtex">@article{c2cad2026,
   title={C2CAD-Bench: A Large-Scale Benchmark for 3D Spatial Reasoning in CAD},
   author={Anonymous Authors},
   journal={arXiv preprint arXiv:26xx.xxxxx},
   year={2026}
 }</pre>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <footer class="footer">
+    <footer class="footer" style="padding: 60px 0; border-top: 1px solid var(--border);">
         <div class="container has-text-centered">
-            <p>
-                <strong>C2CAD-Bench</strong> by Anonymous Authors. 
-                Released under the <a href="http://opensource.org/licenses/mit-license.php">MIT License</a>.
-            </p>
-            <p class="mt-2">
-                &copy; 2026 C2CAD-Bench Research Team.
-            </p>
+            <p class="font-heading" style="font-weight: 700; font-size: 1.25rem; color: var(--text-main);">C2CAD-Bench</p>
+            <p class="mt-2 text-muted">&copy; 2026 C2CAD-Bench Research Team. Distributed under Creative Commons Attribution 4.0 International.</p>
         </div>
     </footer>
 
