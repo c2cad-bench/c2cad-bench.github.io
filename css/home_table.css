@@ -39,14 +39,17 @@
 
 .showcase-table .task-info {
     padding-left: 1.5rem;
-    min-width: 200px;
-    max-width: 240px;
+    min-width: 220px;
+    max-width: 260px;
+    border-right: 1px solid var(--border-light);
 }
 
 .showcase-table .task-info strong {
-    color: var(--text-main);
-    font-size: 1.05rem;
+    color: var(--primary);
+    font-size: 1.1rem;
     font-family: var(--font-heading);
+    display: block;
+    margin-bottom: 4px;
 }
 
 .home-vp {
