@@ -97,8 +97,8 @@ const HomeTable = {
             <div class="table-container">
                 <table class="table is-fullwidth is-hoverable showcase-table">
                     <thead>
-                        <tr>
-                            <th>Benchmark Task</th>
+                        <tr class="table-header-row">
+                            <th class="task-info">Benchmark Task</th>
                             <th class="has-text-centered">Ground Truth</th>
                             <th class="has-text-centered">🥇 ${this.prettyModel(this.top4[0])}</th>
                             <th class="has-text-centered">🥈 ${this.prettyModel(this.top4[1])}</th>
@@ -285,9 +285,22 @@ const HomeTable = {
 
     animate() {
         requestAnimationFrame(() => this.animate());
+        if (!this.renderer) return;
+
         this.scenes.forEach(s => {
             const rect = s.element.getBoundingClientRect();
+            
+            // Basic viewport culling
             if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+            if (rect.right < 0 || rect.left > window.innerWidth) return;
+
+            // Advanced clipping check: Is the element clipped by its scrollable container?
+            const container = s.element.closest('.table-container');
+            if (container) {
+                const cRect = container.getBoundingClientRect();
+                if (rect.right < cRect.left || rect.left > cRect.right) return;
+            }
+
             s.controls.update();
             this.renderer.setViewport(rect.left, window.innerHeight - rect.bottom, rect.width, rect.height);
             this.renderer.setScissor(rect.left, window.innerHeight - rect.bottom, rect.width, rect.height);
