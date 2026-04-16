@@ -129,7 +129,7 @@ const Scoreboard = {
                 if (!pd.length) return;
                 const avg = Math.round(pd.reduce((s, d) => s + (d.score_global || 0), 0) / pd.length);
                 phaseHTML += `<div style="margin-bottom:6px; font-size:11px;">
-                    <span style="color:var(--dark-text-muted);font-weight:600;width:25px;display:inline-block;">P${p}</span>
+                    <span style="color:var(--text-muted);font-weight:600;width:25px;display:inline-block;">P${p}</span>
                     <span class="score-pill ${this.getScoreClass(avg)}">${avg}%</span>
                 </div>`;
             });
@@ -191,7 +191,7 @@ const Scoreboard = {
                 <td>
                     <span class="expand-arrow">▶</span>
                     <span class="family-name">${fam.name}</span>
-                    <span style="font-size:10px;color:var(--dark-text-muted);margin-left:8px;">${fam.entries.length} levels</span>
+                    <span style="font-size:10px;color:var(--text-muted);margin-left:8px;">${fam.entries.length} levels</span>
                 </td>`;
 
             this.modelIds.forEach((m, mIdx) => {
@@ -214,7 +214,7 @@ const Scoreboard = {
             // Detail Rows
             fam.entries.forEach(({test, idx}) => {
                 html += `<tr class="detail-row" data-phase="${fam.phase}" data-fid="${fid}">
-                    <td style="padding-left:40px; font-size:12px; color:var(--dark-text-muted)">${test.difficultyLabel}</td>`;
+                    <td style="padding-left:40px; font-size:12px; color:var(--text-muted)">${test.difficultyLabel}</td>`;
                 this.modelIds.forEach((m, mIdx) => {
                     const res = models[m] ? models[m].find(r => r && r.family === test.family && r.difficultyID === test.difficultyID) : null;
                     html += `<td class="col-m-${mIdx}" style="${this.visibleModels.has(m) ? '' : 'display:none'}">
