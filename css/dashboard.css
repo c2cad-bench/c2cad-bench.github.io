@@ -68,7 +68,7 @@
     border-color: rgba(255, 255, 255, 0.2);
 }
 
-.model-chip.active {
+.model-chip.is-active {
     background: var(--accent-soft);
     border-color: var(--accent);
     color: var(--accent);
@@ -162,7 +162,7 @@
     color: var(--text-main);
 }
 
-.phase-tab.active {
+.phase-tab.is-active {
     color: var(--accent);
     border-bottom-color: var(--accent);
 }
@@ -178,7 +178,7 @@
     color: var(--text-muted);
 }
 
-.phase-tab.active .badge {
+.phase-tab.is-active .badge {
     background: var(--accent-soft);
     color: var(--accent);
 }
