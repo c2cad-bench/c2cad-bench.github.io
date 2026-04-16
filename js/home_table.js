@@ -9,7 +9,7 @@ THREE.Object3D.DEFAULT_UP.set(0, 0, 1);
 const HomeTable = {
     renderer: null,
     scenes: [],
-    top3: [],
+    top4: [],
     
     PALETTE: {
         box:     { color:0x3b82f6, emissive:0x1d4ed8 },
@@ -51,8 +51,8 @@ const HomeTable = {
             };
             return avg(b) - avg(a);
         });
-        this.top3 = sorted.slice(0, 3);
-        console.log('HomeTable: Top 3 Models identified:', this.top3);
+        this.top4 = sorted.slice(0, 4);
+        console.log('HomeTable: Top 4 Models identified:', this.top4);
     },
 
     setupRenderer() {
@@ -81,12 +81,16 @@ const HomeTable = {
         const container = document.getElementById('home-showcase-container');
         const { golden, models } = window.SHOWCASE_DB;
 
-        // Select 4 landmark cases (one per phase if possible)
+        // Select 8 landmark cases that show performance variance
         const cases = [
             golden.find(g => g.family === 'Spiral Staircase' && g.difficultyID === 1),
             golden.find(g => g.family === 'Suspension Bridge' && g.difficultyID === 1),
+            golden.find(g => g.family === 'DNA Helix' && g.difficultyID === 3),
+            golden.find(g => g.family === 'Voxel Grid' && g.difficultyID === 3),
             golden.find(g => g.family === 'Planetary Array' && g.difficultyID === 2),
-            golden.find(g => g.family === 'Fractal Y-Tree' && g.difficultyID === 2)
+            golden.find(g => g.family === 'Flanged Pipe Joint' && g.difficultyID === 3),
+            golden.find(g => g.family === 'Fractal Y-Tree' && g.difficultyID === 2),
+            golden.find(g => g.family === 'Radiolarian Skeleton' && g.difficultyID === 2)
         ].filter(x => x);
 
         let html = `
@@ -96,9 +100,10 @@ const HomeTable = {
                         <tr>
                             <th>Benchmark Task</th>
                             <th class="has-text-centered">Ground Truth</th>
-                            <th class="has-text-centered">🥇 ${this.prettyModel(this.top3[0])}</th>
-                            <th class="has-text-centered">🥈 ${this.prettyModel(this.top3[1])}</th>
-                            <th class="has-text-centered">🥉 ${this.prettyModel(this.top3[2])}</th>
+                            <th class="has-text-centered">🥇 ${this.prettyModel(this.top4[0])}</th>
+                            <th class="has-text-centered">🥈 ${this.prettyModel(this.top4[1])}</th>
+                            <th class="has-text-centered">🥉 ${this.prettyModel(this.top4[2])}</th>
+                            <th class="has-text-centered">🏅 ${this.prettyModel(this.top4[3])}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -107,15 +112,15 @@ const HomeTable = {
         cases.forEach((g, rowIdx) => {
             const gIdx = golden.indexOf(g);
             html += `
-                <tr>
+                <tr class="reveal reveal-up">
                     <td class="task-info">
                         <strong>${g.family}</strong><br>
-                        <small class="has-text-grey">${g.difficultyLabel}</small>
+                        <small class="text-muted">${g.difficultyLabel}</small>
                     </td>
                     <td><div class="home-vp" id="home-vp-gold-${rowIdx}" data-type="gold" data-idx="${gIdx}"></div></td>
-                    <td><div class="home-vp" id="home-vp-top1-${rowIdx}" data-type="ai" data-m="${this.top3[0]}" data-idx="${gIdx}"></div></td>
-                    <td><div class="home-vp" id="home-vp-top2-${rowIdx}" data-type="ai" data-m="${this.top3[1]}" data-idx="${gIdx}"></div></td>
-                    <td><div class="home-vp" id="home-vp-top3-${rowIdx}" data-type="ai" data-m="${this.top3[2]}" data-idx="${gIdx}"></div></td>
+                    ${this.top4.map((m, i) => `
+                        <td><div class="home-vp" id="home-vp-top${i+1}-${rowIdx}" data-type="ai" data-m="${m}" data-idx="${gIdx}"></div></td>
+                    `).join('')}
                 </tr>
             `;
         });
@@ -124,9 +129,24 @@ const HomeTable = {
         container.innerHTML = html;
 
         // Initialize viewports
-        document.querySelectorAll('.home-vp').forEach(el => {
+        const vps = document.querySelectorAll('.home-vp');
+        vps.forEach(el => {
             const { type, idx, m } = el.dataset;
-            const shapes = (type === 'gold') ? golden[idx].shapes : (models[m][idx]?.shapes || []);
+            const targetGold = golden[idx];
+            let shapes = [];
+
+            if (type === 'gold') {
+                shapes = targetGold.shapes;
+            } else if (models[m]) {
+                // Robust matching by family and difficulty
+                const result = models[m].find(res => 
+                    res && 
+                    res.family === targetGold.family && 
+                    res.difficultyID === targetGold.difficultyID
+                );
+                shapes = result ? result.shapes : [];
+            }
+            
             this.createViewport(el, shapes, type === 'ai');
         });
     },

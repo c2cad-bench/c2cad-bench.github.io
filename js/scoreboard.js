@@ -20,14 +20,31 @@ const Scoreboard = {
         this.modelIds = Object.keys(models).sort((a, b) => this.calculateAvgGlobal(b) - this.calculateAvgGlobal(a));
         
         // Initial visibility
-        this.modelIds.slice(0, this.maxDefaultModels).forEach(m => this.visibleModels.add(m));
+        this.visibleModels.clear();
+        this.modelIds.slice(0, 8).forEach(m => this.visibleModels.add(m));
 
+        this.updateTabCounts();
         this.renderToggleChips();
         this.renderSummaryCards();
         this.renderTableHead();
         this.renderTableBody();
         this.applyColumnVisibility();
         this.setupEventListeners();
+    },
+
+    updateTabCounts() {
+        const golden = window.SHOWCASE_DB.golden;
+        if (!golden) return;
+        const counts = { 0: golden.length, 1: 0, 2: 0, 3: 0, 4: 0 };
+        golden.forEach(g => { if(g.phase) counts[g.phase]++; });
+
+        document.querySelectorAll('.phase-tab').forEach(tab => {
+            const p = tab.dataset.phase;
+            if (counts[p] !== undefined) {
+                const badge = tab.querySelector('.badge');
+                if (badge) badge.innerText = counts[p];
+            }
+        });
     },
 
     calculateAvgGlobal(modelId) {
@@ -166,8 +183,6 @@ const Scoreboard = {
         });
 
         let html = '';
-        const phaseLabels = { 1:'Geometric Forms', 2:'Complex Structures', 3:'Engineering Systems', 4:'Bio-Inspired' };
-        
         families.forEach((fam, fIdx) => {
             const fid = `fam-${fIdx}`;
             
@@ -182,8 +197,10 @@ const Scoreboard = {
             this.modelIds.forEach((m, mIdx) => {
                 let sum = 0, count = 0;
                 fam.entries.forEach(({idx}) => {
-                    if (models[m] && models[m][idx]) {
-                        sum += (models[m][idx].score_global || 0);
+                    // Robust finding
+                    const res = models[m] ? models[m].find(r => r && r.family === fam.name && r.difficultyID === golden[idx].difficultyID) : null;
+                    if (res) {
+                        sum += (res.score_global || 0);
                         count++;
                     }
                 });
@@ -199,7 +216,7 @@ const Scoreboard = {
                 html += `<tr class="detail-row" data-phase="${fam.phase}" data-fid="${fid}">
                     <td style="padding-left:40px; font-size:12px; color:var(--dark-text-muted)">${test.difficultyLabel}</td>`;
                 this.modelIds.forEach((m, mIdx) => {
-                    const res = (models[m] && models[m][idx]) ? models[m][idx] : null;
+                    const res = models[m] ? models[m].find(r => r && r.family === test.family && r.difficultyID === test.difficultyID) : null;
                     html += `<td class="col-m-${mIdx}" style="${this.visibleModels.has(m) ? '' : 'display:none'}">
                         ${res ? this.getDetailHTML(res) : '—'}
                     </td>`;
@@ -209,6 +226,7 @@ const Scoreboard = {
         });
 
         tbody.innerHTML = html;
+        this.applyPhaseFilter();
     },
 
     getDetailHTML(res) {
