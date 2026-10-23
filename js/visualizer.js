@@ -33,7 +33,8 @@ const NAMES = {
   "di-claude-opus-5-5": "Claude Opus 5.5",
     "di-kimi-k3": "Kimi K3",
     "di-glm-5.3": "GLM-5.3",
-    "di-gemini-3.7-flash": "Gemini 3.7 Flash"
+    "di-gemini-3.7-flash": "Gemini 3.7 Flash",
+    "di-deepseek-v4-pro-0813": "DeepSeek V4 Pro 0813"
 };
 
 const PALETTE = {
