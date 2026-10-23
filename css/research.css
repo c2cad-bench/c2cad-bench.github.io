@@ -1,0 +1,413 @@
+/* ==========================================================================
+   Research-paper theme layer
+   Loaded after the base styles. Mutes the startup-deck palette into a
+   restrained academic style: warm paper, ink, one navy accent, serif heads,
+   flat surfaces, square corners.
+   ========================================================================== */
+
+:root {
+  --font-display: "Source Serif 4", "Iowan Old Style", "Palatino Linotype",
+    Palatino, Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+
+  --accent: #1f3a5f;
+  --accent-strong: #14273f;
+  --accent-soft: rgba(31, 58, 95, 0.06);
+  --accent-ring: rgba(31, 58, 95, 0.22);
+  --accent-2: #5b6b7c;
+  --accent-2-soft: rgba(91, 107, 124, 0.09);
+  --accent-3: #8a6d3b;
+
+  --gradient: var(--accent);
+  --gradient-soft: rgba(31, 58, 95, 0.06);
+
+  --bg: #fcfbf8;
+  --bg-soft: #f6f4ef;
+  --bg-deep: #eeece6;
+  --bg-elev: #ffffff;
+  --bg-glass: rgba(252, 251, 248, 0.96);
+  --bg-code: #1c1f24;
+
+  --ink: #1b1b1a;
+  --ink-soft: #33322f;
+  --muted: #5d5b56;
+  --muted-2: #77746d;
+
+  --border: #ddd9d0;
+  --border-strong: #c7c2b6;
+
+  --good: #2f6b4f;
+  --good-bg: rgba(47, 107, 79, 0.08);
+  --warn: #8a6a1f;
+  --warn-bg: rgba(138, 106, 31, 0.09);
+  --bad: #9b2c2c;
+  --bad-bg: rgba(155, 44, 44, 0.08);
+
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius: 5px;
+  --radius-lg: 6px;
+  --radius-full: 999px;
+
+  --shadow-xs: 0 1px 1px rgba(20, 20, 18, 0.03);
+  --shadow-sm: 0 1px 2px rgba(20, 20, 18, 0.04);
+  --shadow-md: 0 2px 6px rgba(20, 20, 18, 0.05);
+  --shadow-lg: 0 3px 10px rgba(20, 20, 18, 0.06);
+  --shadow-glow: 0 0 0 transparent;
+}
+
+[data-theme="dark"] {
+  --accent: #9db8d6;
+  --accent-strong: #c3d6ea;
+  --accent-soft: rgba(157, 184, 214, 0.09);
+  --accent-ring: rgba(157, 184, 214, 0.22);
+  --accent-2: #a8a396;
+  --accent-2-soft: rgba(168, 163, 150, 0.1);
+  --accent-3: #c2a878;
+
+  --bg: #141413;
+  --bg-soft: #1a1a19;
+  --bg-deep: #222221;
+  --bg-elev: #1b1b1a;
+  --bg-glass: rgba(20, 20, 19, 0.96);
+  --bg-code: #0f0f0e;
+
+  --ink: #e9e7e1;
+  --ink-soft: #d2cfc8;
+  --muted: #a5a29a;
+  --muted-2: #8b8880;
+
+  --border: #30302e;
+  --border-strong: #424240;
+
+  --good: #86b39a;
+  --good-bg: rgba(134, 179, 154, 0.1);
+  --warn: #c9ab72;
+  --warn-bg: rgba(201, 171, 114, 0.1);
+  --bad: #cf9191;
+  --bad-bg: rgba(207, 145, 145, 0.1);
+}
+
+/* Typography ------------------------------------------------------------- */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.hero h1,
+.section-title,
+.snapshot-title,
+.family-toolbar-title,
+.podium-model,
+.model-name,
+.brand {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+.hero h1 {
+  letter-spacing: -0.01em;
+}
+
+.text-gradient,
+.finding-value.text-gradient {
+  background: none !important;
+  -webkit-text-fill-color: currentColor;
+  background-clip: border-box;
+  color: var(--accent);
+}
+
+/* Flat page grounds ------------------------------------------------------ */
+
+body {
+  background: var(--bg);
+}
+
+.site-header {
+  background: var(--bg-glass);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.scroll-progress {
+  height: 2px;
+  background: var(--accent);
+  box-shadow: none;
+}
+
+.hero::before,
+.hero::after,
+.page-hero::after,
+.viz-hero::after,
+.snapshot::before,
+.citation-card::before,
+.feature-card::after {
+  display: none !important;
+}
+
+.page-hero,
+.viz-page {
+  background: var(--bg);
+}
+
+.snapshot {
+  box-shadow: var(--shadow-sm);
+}
+
+/* Controls --------------------------------------------------------------- */
+
+.btn {
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.btn-primary,
+.btn-gradient {
+  background: var(--accent) !important;
+  border: 1px solid var(--accent);
+  box-shadow: none !important;
+  color: #ffffff;
+}
+
+.btn-primary:hover,
+.btn-gradient:hover {
+  background: var(--accent-strong) !important;
+  border-color: var(--accent-strong);
+  filter: none;
+  transform: none;
+}
+
+.btn-ghost,
+.btn-soft {
+  border-radius: var(--radius-sm);
+}
+
+.brand-mark {
+  background: var(--accent) !important;
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+}
+
+.hero-badge,
+.badge,
+.snapshot-live {
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  color: var(--muted);
+  box-shadow: none;
+}
+
+.hero-badge {
+  background: var(--accent-soft);
+  border-color: transparent;
+  color: var(--accent);
+}
+
+.snapshot-live::before {
+  animation: none;
+  opacity: 0.7;
+}
+
+/* Data marks ------------------------------------------------------------- */
+
+.metric-fill,
+.metric-fill.is-alt,
+.metric-fill.is-warm,
+.bar-fill {
+  background: var(--accent) !important;
+}
+
+.metric-fill.is-alt {
+  background: var(--accent-2) !important;
+}
+
+.metric-fill.is-warm {
+  background: var(--accent-3) !important;
+}
+
+.rank-medal,
+.top-model .top-rank,
+.showcase-table thead th .rank-medal,
+.top-model:nth-child(2) .top-rank,
+.top-model:nth-child(3) .top-rank,
+.top-model:nth-child(4) .top-rank {
+  background: var(--bg-deep) !important;
+  color: var(--ink-soft) !important;
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+
+.phase-card:nth-child(1) {
+  --phase-color: #1f3a5f;
+}
+
+.phase-card:nth-child(2) {
+  --phase-color: #4a5d73;
+}
+
+.phase-card:nth-child(3) {
+  --phase-color: #8a6d3b;
+}
+
+.phase-card:nth-child(4) {
+  --phase-color: #55603f;
+}
+
+.family-chip[data-phase="1"] {
+  --chip-color: #1f3a5f;
+}
+
+.family-chip[data-phase="2"] {
+  --chip-color: #4a5d73;
+}
+
+.family-chip[data-phase="3"] {
+  --chip-color: #8a6d3b;
+}
+
+.family-chip[data-phase="4"] {
+  --chip-color: #55603f;
+}
+
+.podium-card[data-rank="1"] {
+  --podium-color: #1f3a5f;
+  border-color: var(--border);
+  background: var(--bg-elev);
+}
+
+.podium-card[data-rank="2"] {
+  --podium-color: #5b6b7c;
+}
+
+.podium-card[data-rank="3"] {
+  --podium-color: #8a6d3b;
+}
+
+.podium-card[data-rank="1"] .podium-rank {
+  background: var(--bg-soft);
+  color: var(--accent);
+}
+
+[data-theme="dark"] .podium-card[data-rank="1"] .podium-rank {
+  color: var(--accent);
+}
+
+.feature-icon,
+.feature-icon.is-teal,
+.feature-icon.is-amber {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+}
+
+/* Cards: flat, square, no lift ------------------------------------------- */
+
+.card,
+.feature-card,
+.phase-card,
+.finding-card,
+.family-explorer,
+.snapshot,
+.scoreboard-card,
+.podium-card,
+.citation-card,
+.showcase-shell,
+.family-explorer {
+  border-radius: var(--radius);
+  box-shadow: none;
+}
+
+.phase-card:hover,
+.feature-card:hover,
+.card-hover:hover,
+.family-chip:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.citation-card {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  color: var(--ink-soft);
+}
+
+.citation-head h3 {
+  color: var(--ink);
+}
+
+.citation-card pre {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  color: var(--ink-soft);
+}
+
+/* Section labels: smaller caps, less tracking ---------------------------- */
+
+.phase-label,
+.hero-badge,
+.snapshot-top-title,
+.section-kicker {
+  letter-spacing: 0.08em;
+}
+
+
+/* Density and navigation refinements ------------------------------------- */
+
+.hero {
+  padding: calc(var(--nav-h) + 56px) 0 64px;
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 4vw, 3.25rem);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+}
+
+.hero-grid {
+  gap: 48px;
+}
+
+.nav-link {
+  border-radius: 0;
+  padding: 8px 2px;
+  margin: 0 10px;
+}
+
+.nav-link:hover {
+  background: transparent;
+}
+
+.nav-link.is-active {
+  background: transparent;
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.model-chip {
+  border-radius: var(--radius-sm);
+}
+
+.model-chip.is-active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: none;
+}
+
+.model-chip.is-active .provider-dot {
+  box-shadow: none;
+}
+
+.provider-dot,
+.model-chip .chip-dot,
+.family-dot {
+  filter: saturate(0.55) brightness(0.92);
+}
+
+.kpi,
+.summary-card,
+.podium-card {
+  box-shadow: none;
+}

@@ -76,6 +76,11 @@
         return Scoreboard.stats[b].overall - Scoreboard.stats[a].overall;
       });
 
+      var bestKpi = document.getElementById("kpi-best");
+      if (bestKpi && this.modelIds.length) {
+        bestKpi.textContent = Math.round(this.stats[this.modelIds[0]].overall) + "%";
+      }
+
       this.visible.clear();
       this.modelIds.slice(0, this.defaultVisible).forEach(
         function (model) {
