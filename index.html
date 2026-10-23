@@ -1,330 +1,893 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C2CAD-Bench: A Large-Scale Benchmark for 3D Spatial Reasoning</title>
-    <meta name="description" content="C2CAD-Bench evaluates the multi-step spatial reasoning capabilities of LLMs in producing deterministic CAD geometry.">
-    
-    <!-- Google Fonts -->
+    <title>C2CAD-Bench — A Large-Scale Benchmark for 3D Spatial Reasoning</title>
+    <meta name="description"                     content="C2CAD-Bench evaluates the multi-step spatial reasoning capabilities of LLMs in producing deterministic CAD geometry. 25 test families, 75 test cases, 23 frontier models.">
+    <meta name="theme-color" content="#ffffff">
+    <meta property="og:title" content="C2CAD-Bench — 3D Spatial Reasoning Benchmark">
+    <meta property="og:description" content="A large-scale benchmark that isolates spatial reasoning from code generation. Natural-language specs to deterministic JSON geometry, scored against parametric ground truth.">
+    <meta property="og:type" content="website">
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234f46e5'/%3E%3Cpath d='M16 6 7 11v10l9 5 9-5V11l-9-5Z' fill='none' stroke='white' stroke-width='1.8'/%3E%3Cpath d='m7 11 9 5 9-5M16 16v10' fill='none' stroke='white' stroke-width='1.8'/%3E%3C/svg%3E">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&family=Quicksand:wght@300;400;500;600;700&family=Roboto+Mono&display=swap" rel="stylesheet">
-    
-    <!-- Frameworks -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css">
-    <script src="https://kit.fontawesome.com/5fd1dd8417.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Sora:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
 
-    <!-- Styles -->
     <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/c2cad.css">
     <link rel="stylesheet" href="css/landing.css">
     <link rel="stylesheet" href="css/home_table.css">
     <link rel="stylesheet" href="css/dashboard.css">
-    <style>
-        .publication-title {
-            background: linear-gradient(135deg, var(--text-main) 0%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .section-title {
-            color: var(--text-main);
-            border-bottom: 2px solid var(--accent);
-            display: inline-block;
-            margin-bottom: 2rem;
-        }
-        .bibtex-box {
-            background: #f8fafc;
-            border: 1px solid var(--border);
-            padding: 20px;
-            border-radius: 8px;
-            position: relative;
-        }
-        .copy-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-    </style>
+
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem('c2cad-theme');
+                if (saved === 'dark' || saved === 'light') {
+                    document.documentElement.setAttribute('data-theme', saved);
+                }
+            } catch (e) { /* noop */ }
+        })();
+    </script>
 </head>
 <body>
 
-    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
-        <div class="container">
-            <div class="navbar-brand">
-                <a class="navbar-item navbar-logo" href="index.html">
-                    C2CAD-Bench
-                </a>
+    <div class="scroll-progress" aria-hidden="true"></div>
+
+    <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+        <symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 2.5 3.5 7.4v9.2L12 21.5l8.5-4.9V7.4L12 2.5Z"/><path d="m3.5 7.4 8.5 4.9 8.5-4.9M12 12.3v9.2"/></symbol>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+        <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/></symbol>
+        <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3v5h5"/><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M9 13h6M9 17h4"/></symbol>
+        <symbol id="i-github" viewBox="0 0 24 24"><path d="M9 19c-4 1.5-4-2.5-6-3m12 6v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1-.3-3.4 1.3a11.7 11.7 0 0 0-6 0C6.7 3.8 5.7 4 5.7 4a4.3 4.3 0 0 0-.1 3.2A4.6 4.6 0 0 0 4.3 10.5c0 4.6 2.7 5.7 5.5 6-.4.4-.5.9-.5 1.5V22"/></symbol>
+        <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+        <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+        <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"/></symbol>
+        <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+        <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+        <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></symbol>
+        <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/></symbol>
+        <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></symbol>
+        <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+        <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="m12 3 1.8 4.5L18 9l-4.2 1.5L12 15l-1.8-4.5L6 9l4.2-1.5L12 3Z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z"/></symbol>
+        <symbol id="i-zoom" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M8 11h6M11 8v6"/></symbol>
+    </svg>
+
+    <header class="site-header">
+        <div class="container nav-inner">
+            <a class="brand" href="index.html" aria-label="C2CAD-Bench home">
+                <span class="brand-mark"><svg class="icon"><use href="#i-cube"></use></svg></span>
+                <span>C2CAD-Bench<span class="brand-sub">3D Spatial Reasoning</span></span>
+            </a>
+
+            <div class="nav-menu" id="site-nav-menu">
+                <nav class="nav-links" aria-label="Primary">
+                    <a class="nav-link is-active" href="#abstract">Abstract</a>
+                    <a class="nav-link" href="#benchmark">Benchmark</a>
+                    <a class="nav-link" href="#leaderboard">Leaderboard</a>
+                    <a class="nav-link" href="#analysis">Analysis</a>
+                    <a class="nav-link" href="#citation">Citation</a>
+                </nav>
+                <div class="nav-actions">
+                    <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Switch theme" aria-pressed="false">
+                        <svg class="icon icon-sun"><use href="#i-sun"></use></svg>
+                        <svg class="icon icon-moon"><use href="#i-moon"></use></svg>
+                    </button>
+                    <a class="btn btn-ghost btn-sm" href="ui/results.html">Scoreboard</a>
+                    <a class="btn btn-primary btn-sm" href="ui/visualizer.html">
+                        <svg class="icon"><use href="#i-cube"></use></svg>
+                        3D Visualizer
+                    </a>
+                </div>
             </div>
-            <div class="navbar-menu">
-                <div class="navbar-end">
-                    <a class="navbar-item is-active" href="index.html">Abstract</a>
-                    <a class="navbar-item" href="#benchmarks">Benchmarks</a>
-                    <a class="navbar-item" href="ui/results.html">Scoreboard</a>
-                    <div class="navbar-item">
-                        <div class="buttons">
-                            <a class="button link-button is-rounded" href="ui/visualizer.html">
-                                <span class="icon"><i class="fas fa-cube"></i></span>
-                                <span>3D Visualizer</span>
+
+            <button class="nav-toggle" type="button" data-nav-toggle aria-controls="site-nav-menu" aria-expanded="false" aria-label="Toggle navigation">
+                <svg class="icon icon-menu"><use href="#i-menu"></use></svg><svg class="icon icon-close"><use href="#i-close"></use></svg>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-copy">
+                        <div class="badge hero-badge"><span class="badge-dot"></span>NeurIPS 2026 Submission</div>
+                        <h1>
+                            <span class="hero-line">C2CAD-Bench:</span>
+                            <span class="hero-line text-gradient">A Large-Scale Benchmark for 3D Spatial Reasoning</span>
+                        </h1>
+                        <p class="hero-lead">
+                            We remove the code layer entirely. Models read natural-language engineering
+                            specifications and return deterministic JSON geometry, scored against parametric
+                            ground truth — no execution, no rendering, no shortcuts.
+                        </p>
+                        <div class="hero-meta">
+                            <span class="hero-authors">Anonymous Authors</span>
+                            <span class="dot-sep" aria-hidden="true"></span>
+                            <span>23 frontier LLMs</span>
+                            <span class="dot-sep" aria-hidden="true"></span>
+                            <span>9 providers</span>
+                        </div>
+                        <div class="btn-row hero-cta">
+                            <a class="btn btn-primary" href="https://arxiv.org/abs/xxxx.xxxxx" target="_blank" rel="noopener">
+                                <svg class="icon"><use href="#i-file"></use></svg>
+                                Paper
                             </a>
+                            <a class="btn btn-ghost" href="https://github.com/neurips2026submission-alt/c2cad-bench" target="_blank" rel="noopener">
+                                <svg class="icon"><use href="#i-github"></use></svg>
+                                Code
+                            </a>
+                            <a class="btn btn-ghost" href="ui/visualizer.html">
+                                <svg class="icon"><use href="#i-cube"></use></svg>
+                                Explore 3D
+                            </a>
+                        </div>
+
+                        <div class="hero-stats">
+                            <div class="hero-stat">
+                                <div class="hero-stat-value">25</div>
+                                <div class="hero-stat-label">Test families</div>
+                            </div>
+                            <div class="hero-stat">
+                                <div class="hero-stat-value">75</div>
+                                <div class="hero-stat-label">Test cases</div>
+                            </div>
+                            <div class="hero-stat">
+                                <div class="hero-stat-value">23</div>
+                                <div class="hero-stat-label">Frontier LLMs</div>
+                            </div>
+                            <div class="hero-stat">
+                                <div class="hero-stat-value">805</div>
+                                <div class="hero-stat-label">Primitives in one case</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="snapshot" aria-label="Benchmark snapshot">
+                        <div class="snapshot-head">
+                            <div>
+                                <div class="snapshot-title">Benchmark snapshot</div>
+                                <div class="snapshot-sub">Aggregate across 23 frontier models</div>
+                            </div>
+                            <span class="snapshot-live">Live data</span>
+                        </div>
+
+                        <div class="snapshot-main">
+                            <div class="donut" style="--pct: 75">
+                                <div class="donut-label">
+                                    <div class="donut-value">75<span>%</span></div>
+                                    <div class="donut-caption">Mean score</div>
+                                </div>
+                            </div>
+                            <div class="metric-list">
+                                <div class="metric-row">
+                                    <span class="metric-name">Coverage</span>
+                                    <span class="metric-value">85%</span>
+                                    <span class="metric-track"><span class="metric-fill" style="--value: 85%"></span></span>
+                                </div>
+                                <div class="metric-row">
+                                    <span class="metric-name">Geometry</span>
+                                    <span class="metric-value">72%</span>
+                                    <span class="metric-track"><span class="metric-fill is-alt" style="--value: 72%"></span></span>
+                                </div>
+                                <div class="metric-row">
+                                    <span class="metric-name">Semantic</span>
+                                    <span class="metric-value">76%</span>
+                                    <span class="metric-track"><span class="metric-fill is-warm" style="--value: 76%"></span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="snapshot-top">
+                            <div class="snapshot-top-title">Top models</div>
+                            <div class="top-model">
+                                <span class="top-rank">01</span>
+                                <span class="top-name">Claude Opus 5.5</span>
+                                <span class="top-score">95</span>
+                            </div>
+                            <div class="top-model">
+                                <span class="top-rank">02</span>
+                                <span class="top-name">Claude Sonnet 5.5</span>
+                                <span class="top-score">94</span>
+                            </div>
+                            <div class="top-model">
+                                <span class="top-rank">03</span>
+                                <span class="top-name">Step 5 Preview</span>
+                                <span class="top-score">85</span>
+                            </div>
+                        </div>
+
+                        <div class="snapshot-float">
+                            <span class="badge-dot"></span>
+                            Coverage–geometry gap <strong>13 pts</strong>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </nav>
+        </section>
 
-    <!-- Hero Section -->
-    <section class="hero pb-6 mt-6">
-        <div class="hero-body">
-            <div class="container is-max-desktop has-text-centered">
-                <h1 class="title is-1 publication-title">
-                    C2CAD-Bench: A Large-Scale Benchmark for 3D Spatial Reasoning
-                </h1>
-                
-                <div class="is-size-5 publication-authors">
-                    <span class="author-block">Anonymous Authors</span>
-                </div>
-
-                <div class="is-size-5 publication-institute mt-2">
-                    <span class="author-block">NeurIPS 2026 Submission</span>
-                </div>
-
-                <div class="link-blocks">
-                    <a class="button link-button" href="https://arxiv.org/abs/xxxx.xxxxx">
-                        <span class="icon"><i class="fas fa-file-pdf"></i></span>
-                        <span>Paper</span>
-                    </a>
-                    <a class="button link-button" href="https://github.com/neurips2026submission-alt/c2cad-bench">
-                        <span class="icon"><i class="fab fa-github"></i></span>
-                        <span>Code</span>
-                    </a>
-                    <a class="button link-button" href="./ui/visualizer.html">
-                        <span class="icon"><i class="fas fa-cube"></i></span>
-                        <span>3D Visualizer</span>
-                    </a>
-                    <a class="button link-button" href="./ui/results.html">
-                        <span class="icon"><i class="fas fa-chart-line"></i></span>
-                        <span>Scoreboard</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Benchmark & Methodology Section -->
-    <section class="section" id="benchmarking">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="text-gradient">Benchmark Structure & Objectives</h2>
-            <div class="content mt-5">
-                <p>C2CAD-Bench evaluates the multi-step spatial reasoning capabilities of LLMs in generating deterministic CAD geometry. The benchmark requires models to map high-level engineering specifications to precise parametric primitives.</p>
-                <p>Unlike previous shape-focused benchmarks, C2CAD-Bench emphasizes:</p>
-                <ul class="mt-4">
-                    <li class="mb-3">
-                        <strong style="color: var(--text-main);">Geometric Constraints:</strong> 
-                        <span class="text-muted">Concentricity, patterns, and pathing.</span>
-                    </li>
-                    <li class="mb-3">
-                        <strong style="color: var(--text-main);">Topological Validity:</strong> 
-                        <span class="text-muted">Connectivity and manifold verification.</span>
-                    </li>
-                    <li class="mb-3">
-                        <strong style="color: var(--text-main);">Reasoning Depth:</strong> 
-                        <span class="text-muted">Multi-phase complexity from primitives to functional assemblies.</span>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Stats Bar -->
-            <div class="columns is-multiline mt-6">
-                <div class="column is-4 has-text-centered">
-                    <div class="premium-card p-4">
-                        <h4 class="font-heading" style="color:var(--accent); font-size:1.5rem;">75 Test Cases</h4>
-                        <p class="text-muted" style="font-size:0.9rem;">25 test families across four phases of cognitive demand.</p>
-                    </div>
-                </div>
-                <div class="column is-4 has-text-centered">
-                    <div class="premium-card p-4">
-                        <h4 class="font-heading" style="color:var(--accent); font-size:1.5rem;">20+ LLMs</h4>
-                        <p class="text-muted" style="font-size:0.9rem;">From OpenAI, Anthropic, Google, and DeepSeek.</p>
-                    </div>
-                </div>
-                <div class="column is-4 has-text-centered">
-                    <div class="premium-card p-4">
-                        <h4 class="font-heading" style="color:var(--accent); font-size:1.5rem;">Deterministic</h4>
-                        <p class="text-muted" style="font-size:0.9rem;">Scored against parametric ground truth without code execution.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Showcase Table (Logic in home_table.js) -->
-            <div id="home-showcase-container" class="premium-card" style="margin-top: 60px;">
-                <div class="has-text-centered p-6">
-                    <div class="loader-spinner"></div>
-                    <p class="mt-4 text-muted">Loading live benchmark showcase...</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-        <!-- Evaluation Scoreboard Section -->
-        <section class="section" id="scoreboard" style="background: var(--bg-subtle);">
+        <!-- Abstract -->
+        <section class="section" id="abstract">
             <div class="container">
-                <div class="section-header">
-                    <h2 class="text-gradient">Leaderboard & Global Evaluation</h2>
-                    <p>Benchmark results across 20+ state-of-the-art LLMs, evaluated on spatial fidelity, topological correctness, and prompt adherence.</p>
+                <div class="section-head reveal">
+                    <span class="eyebrow">Abstract</span>
+                    <h2 class="section-title">Spatial understanding, measured without code.</h2>
+                    <p class="section-lead">
+                        Existing benchmarks blend programming proficiency with geometric reasoning.
+                        C2CAD-Bench separates the two so that a syntactically correct script that places
+                        every part at the wrong coordinate no longer passes.
+                    </p>
                 </div>
 
-                <!-- Tabs & Controls -->
-                <div class="model-toggle-bar" id="model-toggle-bar">
-                    <!-- Injected by JS -->
-                </div>
+                <div class="abstract-grid">
+                    <div class="abstract-body reveal">
+                        <p>
+                            AI-assisted CAD design relies on a prompt-to-code-to-CAD pipeline, where an LLM
+                            generates code for a CAD engine from a natural-language description. Existing
+                            benchmarks combine programming proficiency with spatial understanding; reaching a
+                            syntactically correct script that places every part at the wrong coordinate passes
+                            all execution-based checks. Moreover, image-based evaluation cannot inspect internal
+                            geometry such as lattice connectivity or clearance fits.
+                        </p>
+                        <p>
+                            We introduce <strong>C2CAD-BENCH</strong>, a benchmark that isolates 3D spatial
+                            reasoning from code-generation proficiency by removing the code layer entirely.
+                            Models receive a natural-language engineering specification and must produce a JSON
+                            array of geometric primitives, scored deterministically against parametric ground
+                            truth without code execution or rendering. Prompts follow a zero-scaffolding
+                            methodology that supplies only physical intent, requiring models to derive every
+                            coordinate from first principles.
+                        </p>
+                        <p>
+                            The benchmark comprises 25 test families across four phases of cognitive demand
+                            (75 test cases, up to 805 shapes), evaluated with a gated three-axis scoring
+                            pipeline — Coverage, Geometry, and Semantic. Evaluation of 13 frontier LLMs from
+                            five providers reveals a persistent coverage–geometry gap of roughly 19 points,
+                            systematic primitive type confusion, and that constraint complexity rather than
+                            shape count drives difficulty.
+                        </p>
+                    </div>
 
-                <div class="summary-row" id="summary-row">
-                    <!-- Injected by JS -->
-                </div>
-
-                <div class="phase-bar" id="phase-bar-container">
-                    <div class="phase-tab is-active" data-phase="0">All Phases <span class="badge">75</span></div>
-                    <div class="phase-tab" data-phase="1">Phase 1 <span class="badge">18</span></div>
-                    <div class="phase-tab" data-phase="2">Phase 2 <span class="badge">18</span></div>
-                    <div class="phase-tab" data-phase="3">Phase 3 <span class="badge">18</span></div>
-                    <div class="phase-tab" data-phase="4">Phase 4 <span class="badge">21</span></div>
-                </div>
-
-                <!-- Embedded Dashboard -->
-                <div class="scoreboard-card premium-card">
-                    <table class="table is-fullwidth">
-                        <thead id="table-head"></thead>
-                        <tbody id="table-body">
-                            <tr><td colspan="100%" class="has-text-centered" style="padding: 100px; color: var(--text-muted);">
-                                <div class="loader-spinner"></div>
-                                <p class="mt-4">Loading evaluation data...</p>
-                            </td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="has-text-centered mt-6">
-                    <a href="ui/results.html" class="btn-premium">
-                        View Detailed Metrics <span>&rarr;</span>
-                    </a>
+                    <aside class="abstract-note reveal">
+                        <div class="abstract-note-title">
+                            <svg class="icon"><use href="#i-sparkles"></use></svg>
+                            Why a new benchmark?
+                        </div>
+                        <ul>
+                            <li><div><strong>No code escape hatch.</strong> Models cannot hide geometric errors behind syntactically valid programs.</div></li>
+                            <li><div><strong>Internal geometry is visible.</strong> Lattice connectivity, clearances and concentricity are scored directly.</div></li>
+                            <li><div><strong>Zero scaffolding.</strong> Every coordinate must be derived from physical intent, not provided in the prompt.</div></li>
+                            <li><div><strong>Deterministic by design.</strong> Parametric ground truth makes every score reproducible.</div></li>
+                        </ul>
+                    </aside>
                 </div>
             </div>
         </section>
 
-    <!-- Teaser Section -->
-    <section class="section">
-        <div class="container is-max-desktop has-text-centered">
-            <figure class="reveal">
-                <img src="results/fig1_overall_rankings.png" alt="Overall Model Rankings Heatmap" style="width: 100%; border-radius: 8px;">
-                <figcaption class="mt-4 has-text-grey">
-                    <strong>Figure 1:</strong> Comparative evaluation of 13 frontier Large Language Models across the C2CAD-Bench spectrum.
-                </figcaption>
-            </figure>
-        </div>
-    </section>
-
-    <!-- Abstract Section -->
-    <section class="section has-background-white">
-        <div class="container is-max-desktop">
-            <h2 class="section-title">Abstract</h2>
-            <div class="content abstract-content">
-                <p>
-                    AI-assisted CAD design relies on a prompt-to-code-to-CAD pipeline, where an LLM generates code for a CAD engine from a natural-language description. Existing benchmarks combine programming proficiency with spatial understanding; reaching a syntactically correct script that places every part at the wrong coordinate passes all execution-based checks. Moreover, image-based evaluation cannot inspect internal geometry such as lattice connectivity or clearance fits. We introduce <strong>C2CAD-BENCH</strong>, a benchmark that isolates 3D spatial reasoning from code-generation proficiency by removing the code layer entirely. Models receive a natural-language engineering specification and must produce a JSON array of geometric primitives, scored deterministically against parametric ground truth without code execution or rendering. Prompts follow a zero-scaffolding methodology that supplies only physical intent, requiring models to derive every coordinate from first principles. The benchmark comprises 25 test families across four phases of cognitive demand (75 test cases, up to 805 shapes), evaluated with a gated three-axis scoring pipeline (Coverage, Geometry, Semantic). Evaluation of 13 frontier LLMs from five providers reveals a persistent coverage–geometry gap of roughly 19 points, systematic primitive type confusion, and that constraint complexity rather than shape count drives difficulty.
-                </p>
-            </div>
-        </div>
-    </section>
-
-
-
-        <!-- Citation Section -->
-        <section class="section" id="citation">
+        <!-- Why / contributions -->
+        <section class="section section--soft" id="why">
             <div class="container">
-                <div class="section-header">
-                    <h2>BibTeX Citation</h2>
-                    <p>If you find C2CAD-Bench useful in your research, please cite our work.</p>
+                <div class="section-head reveal">
+                    <span class="eyebrow">Why C2CAD-Bench</span>
+                    <h2 class="section-title">Three changes that make reasoning measurable.</h2>
+                    <p class="section-lead">
+                        A benchmark is only as good as what it isolates. We rebuilt the evaluation target
+                        around the part of the problem that actually matters: spatial intent.
+                    </p>
                 </div>
-                <div class="bibtex-box glassmorphism">
+
+                <div class="feature-grid">
+                    <article class="feature-card reveal">
+                        <div class="feature-icon"><svg class="icon"><use href="#i-layers"></use></svg></div>
+                        <h3>No code layer</h3>
+                        <p>
+                            Models emit a JSON array of primitives instead of a program. Correctness no
+                            longer depends on API fluency, import paths or execution environments.
+                        </p>
+                    </article>
+                    <article class="feature-card reveal">
+                        <div class="feature-icon is-teal"><svg class="icon"><use href="#i-target"></use></svg></div>
+                        <h3>Deterministic scoring</h3>
+                        <p>
+                            A gated three-axis pipeline compares coverage, geometry and semantics against
+                            parametric ground truth. Every score can be recomputed from the same inputs.
+                        </p>
+                    </article>
+                    <article class="feature-card reveal">
+                        <div class="feature-icon is-amber"><svg class="icon"><use href="#i-shield"></use></svg></div>
+                        <h3>Cognitive depth</h3>
+                        <p>
+                            Four phases move from single primitives to functional assemblies, exposing
+                            where constraint complexity — not shape count — breaks the reasoning chain.
+                        </p>
+                    </article>
+                </div>
+
+                <div class="compare-wrap reveal">
+                    <table class="compare-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Dimension</th>
+                                <th scope="col">Execution-based</th>
+                                <th scope="col">Image-based</th>
+                                <th scope="col" class="is-highlight">C2CAD-Bench</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Signal evaluated</td>
+                                <td>Program validity + output</td>
+                                <td>Rendered appearance</td>
+                                <td class="is-highlight">Parametric geometry</td>
+                            </tr>
+                            <tr>
+                                <td>Code required</td>
+                                <td><span class="yes">Yes</span></td>
+                                <td><span class="no">No</span></td>
+                                <td class="is-highlight"><span class="yes">No</span></td>
+                            </tr>
+                            <tr>
+                                <td>Internal geometry</td>
+                                <td>Limited</td>
+                                <td><span class="no">Not visible</span></td>
+                                <td class="is-highlight"><span class="yes">Fully inspected</span></td>
+                            </tr>
+                            <tr>
+                                <td>Scoring</td>
+                                <td>Pass / fail or rendered similarity</td>
+                                <td>Image metrics</td>
+                                <td class="is-highlight">Gated, deterministic, three-axis</td>
+                            </tr>
+                            <tr>
+                                <td>Reproducibility</td>
+                                <td>Environment dependent</td>
+                                <td>Render dependent</td>
+                                <td class="is-highlight"><span class="yes">Exact</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benchmark structure -->
+        <section class="section" id="benchmark">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="eyebrow">Benchmark structure</span>
+                    <h2 class="section-title">25 families across four phases of cognitive demand.</h2>
+                    <p class="section-lead">
+                        Each family contains three difficulty levels. Phase 1 focuses on primitives and
+                        repetition; Phase 4 pushes toward functional assemblies and extreme-scale patterns.
+                    </p>
+                </div>
+
+                <div class="phase-grid">
+                    <article class="phase-card reveal">
+                        <div class="phase-top">
+                            <span class="phase-label">Phase 1</span>
+                            <span class="phase-count">18 cases</span>
+                        </div>
+                        <h3>Foundations</h3>
+                        <p>Primitive placement, repetition, radial patterns and basic constraints.</p>
+                        <div class="phase-fams">
+                            <span>Spiral Staircase</span><span>Cannonball Pyramid</span><span>Voxel Grid</span>
+                            <span>Domino Ring</span><span>DNA Helix</span><span>Flanged Pipe Joint</span>
+                        </div>
+                    </article>
+                    <article class="phase-card reveal">
+                        <div class="phase-top">
+                            <span class="phase-label">Phase 2</span>
+                            <span class="phase-count">18 cases</span>
+                        </div>
+                        <h3>Structures</h3>
+                        <p>Tension, bridging, lattices and orbiting component relationships.</p>
+                        <div class="phase-fams">
+                            <span>Suspension Bridge</span><span>Planetary Array</span><span>Cross-Braced Truss</span>
+                            <span>Fractal Y-Tree</span><span>BCC Lattice</span><span>Ball Bearing Assembly</span>
+                        </div>
+                    </article>
+                    <article class="phase-card reveal">
+                        <div class="phase-top">
+                            <span class="phase-label">Phase 3</span>
+                            <span class="phase-count">18 cases</span>
+                        </div>
+                        <h3>Mechanisms</h3>
+                        <p>Multi-part assemblies, concentricity, clearances and functional grouping.</p>
+                        <div class="phase-fams">
+                            <span>Furniture Assembly</span><span>Pipe Manifold</span><span>Axle Bearing</span>
+                            <span>Armillary Sphere</span><span>Clock Tower Mechanism</span><span>Gantry Crane Assembly</span>
+                        </div>
+                    </article>
+                    <article class="phase-card reveal">
+                        <div class="phase-top">
+                            <span class="phase-label">Phase 4</span>
+                            <span class="phase-count">21 cases</span>
+                        </div>
+                        <h3>Extreme scale</h3>
+                        <p>Algorithmic growth, organic geometry and cases with up to 805 primitives.</p>
+                        <div class="phase-fams">
+                            <span>Phyllotaxis Disc</span><span>Compound Eye</span><span>Diatom Frustule</span>
+                            <span>Honeycomb Lattice</span><span>Vertebral Column</span><span>Cochlear Spiral</span>
+                            <span>Radiolarian Skeleton</span>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="family-explorer reveal" data-family-explorer>
+                    <div class="family-toolbar">
+                        <div class="family-toolbar-title">
+                            Family explorer
+                            <span><span data-family-count>25</span> families shown</span>
+                        </div>
+                        <div class="family-filters" role="group" aria-label="Filter families by phase">
+                            <button class="family-filter is-active" type="button" data-filter="all">All</button>
+                            <button class="family-filter" type="button" data-filter="1">Phase 1</button>
+                            <button class="family-filter" type="button" data-filter="2">Phase 2</button>
+                            <button class="family-filter" type="button" data-filter="3">Phase 3</button>
+                            <button class="family-filter" type="button" data-filter="4">Phase 4</button>
+                        </div>
+                    </div>
+                    <div class="family-grid">
+                        <a class="family-chip" data-phase="1" href="ui/visualizer.html?phase=1&amp;family=Spiral%20Staircase"><span class="family-dot"></span>Spiral Staircase<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="1" href="ui/visualizer.html?phase=1&amp;family=Cannonball%20Pyramid"><span class="family-dot"></span>Cannonball Pyramid<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="1" href="ui/visualizer.html?phase=1&amp;family=Voxel%20Grid"><span class="family-dot"></span>Voxel Grid<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="1" href="ui/visualizer.html?phase=1&amp;family=Domino%20Ring"><span class="family-dot"></span>Domino Ring<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="1" href="ui/visualizer.html?phase=1&amp;family=DNA%20Helix"><span class="family-dot"></span>DNA Helix<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="1" href="ui/visualizer.html?phase=1&amp;family=Flanged%20Pipe%20Joint"><span class="family-dot"></span>Flanged Pipe Joint<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="2" href="ui/visualizer.html?phase=2&amp;family=Suspension%20Bridge"><span class="family-dot"></span>Suspension Bridge<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="2" href="ui/visualizer.html?phase=2&amp;family=Planetary%20Array"><span class="family-dot"></span>Planetary Array<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="2" href="ui/visualizer.html?phase=2&amp;family=Cross-Braced%20Truss"><span class="family-dot"></span>Cross-Braced Truss<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="2" href="ui/visualizer.html?phase=2&amp;family=Fractal%20Y-Tree"><span class="family-dot"></span>Fractal Y-Tree<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="2" href="ui/visualizer.html?phase=2&amp;family=BCC%20Lattice"><span class="family-dot"></span>BCC Lattice<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="2" href="ui/visualizer.html?phase=2&amp;family=Ball%20Bearing%20Assembly"><span class="family-dot"></span>Ball Bearing Assembly<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="3" href="ui/visualizer.html?phase=3&amp;family=Furniture%20Assembly"><span class="family-dot"></span>Furniture Assembly<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="3" href="ui/visualizer.html?phase=3&amp;family=Pipe%20Manifold"><span class="family-dot"></span>Pipe Manifold<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="3" href="ui/visualizer.html?phase=3&amp;family=Axle%20Bearing"><span class="family-dot"></span>Axle Bearing<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="3" href="ui/visualizer.html?phase=3&amp;family=Armillary%20Sphere"><span class="family-dot"></span>Armillary Sphere<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="3" href="ui/visualizer.html?phase=3&amp;family=Clock%20Tower%20Mechanism"><span class="family-dot"></span>Clock Tower Mechanism<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="3" href="ui/visualizer.html?phase=3&amp;family=Gantry%20Crane%20Assembly"><span class="family-dot"></span>Gantry Crane Assembly<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="4" href="ui/visualizer.html?phase=4&amp;family=Phyllotaxis%20Disc"><span class="family-dot"></span>Phyllotaxis Disc<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="4" href="ui/visualizer.html?phase=4&amp;family=Compound%20Eye"><span class="family-dot"></span>Compound Eye<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="4" href="ui/visualizer.html?phase=4&amp;family=Diatom%20Frustule"><span class="family-dot"></span>Diatom Frustule<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="4" href="ui/visualizer.html?phase=4&amp;family=Honeycomb%20Lattice"><span class="family-dot"></span>Honeycomb Lattice<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="4" href="ui/visualizer.html?phase=4&amp;family=Vertebral%20Column"><span class="family-dot"></span>Vertebral Column<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="4" href="ui/visualizer.html?phase=4&amp;family=Cochlear%20Spiral"><span class="family-dot"></span>Cochlear Spiral<small>L1–L3</small></a>
+                        <a class="family-chip" data-phase="4" href="ui/visualizer.html?phase=4&amp;family=Radiolarian%20Skeleton"><span class="family-dot"></span>Radiolarian Skeleton<small>L1–L3</small></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3D showcase -->
+        <section class="section section--soft" id="showcase">
+            <div class="container">
+                <div class="section-head section-head--split reveal">
+                    <div>
+                        <span class="eyebrow">Interactive showcase</span>
+                        <h2 class="section-title">Ground truth vs. the top four models.</h2>
+                        <p class="section-lead">
+                            Eight landmark cases with high performance variance. Every viewport is live —
+                            drag to orbit.
+                        </p>
+                    </div>
+                    <a class="btn btn-ghost" href="ui/visualizer.html">
+                        Open full visualizer
+                        <svg class="icon"><use href="#i-arrow"></use></svg>
+                    </a>
+                </div>
+
+                <div class="showcase-shell reveal">
+                    <div id="home-showcase-container">
+                        <div class="showcase-loading">
+                            <div class="spinner"></div>
+                            <p>Loading live benchmark geometry…</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="showcase-note">
+                    <svg class="icon"><use href="#i-cube"></use></svg>
+                    <span>Ground truth models are rendered from the parametric reference; model outputs are reconstructed from returned JSON primitives.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leaderboard -->
+        <section class="section" id="leaderboard">
+            <div class="container">
+                <div class="section-head section-head--split reveal">
+                    <div>
+                        <span class="eyebrow">Global evaluation</span>
+                        <h2 class="section-title">Leaderboard across 23 frontier models.</h2>
+                        <p class="section-lead">
+                            Scores are aggregated over all 75 cases. Expand any family to inspect the
+                            Coverage, Geometry and Semantic breakdown.
+                        </p>
+                    </div>
+                    <a class="btn btn-ghost" href="ui/results.html">
+                        Full scoreboard
+                        <svg class="icon"><use href="#i-chart"></use></svg>
+                    </a>
+                </div>
+
+                <div class="leaderboard-shell reveal">
+                    <div id="podium" class="podium-section"></div>
+
+                    <div class="leaderboard-toolbar">
+                        <div class="model-toggle-bar" id="model-toggle-bar">
+                            <span class="label">Models</span>
+                        </div>
+                        <button id="toggle-all-btn" class="btn btn-ghost btn-sm" type="button">Show all models</button>
+                    </div>
+
+                    <div class="summary-section">
+                        <div class="summary-grid" id="summary-row"></div>
+                    </div>
+
+                    <div class="phase-tabs" id="phase-bar-container">
+                        <button class="phase-tab is-active" type="button" data-phase="0">All phases <span class="badge">75</span></button>
+                        <button class="phase-tab" type="button" data-phase="1">Phase 1 <span class="badge">18</span></button>
+                        <button class="phase-tab" type="button" data-phase="2">Phase 2 <span class="badge">18</span></button>
+                        <button class="phase-tab" type="button" data-phase="3">Phase 3 <span class="badge">18</span></button>
+                        <button class="phase-tab" type="button" data-phase="4">Phase 4 <span class="badge">21</span></button>
+                    </div>
+
+                    <div class="scoreboard-card">
+                        <div class="scoreboard-scroll">
+                            <table class="scoreboard-table">
+                                <thead id="table-head"></thead>
+                                <tbody id="table-body">
+                                    <tr>
+                                        <td colspan="100%">
+                                            <div class="data-state">
+                                                <div class="spinner"></div>
+                                                <p>Loading evaluation data…</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="legend">
+                        <span class="legend-item"><span class="legend-swatch good"></span>Strong (&gt; 80)</span>
+                        <span class="legend-item"><span class="legend-swatch warn"></span>Partial (40–80)</span>
+                        <span class="legend-item"><span class="legend-swatch bad"></span>Weak (&lt; 40)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analysis -->
+        <section class="section section--soft" id="analysis">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="eyebrow">Analysis</span>
+                    <h2 class="section-title">What the numbers reveal.</h2>
+                    <p class="section-lead">
+                        Across 13 models, coverage is consistently easier than geometry. The gap widens
+                        with constraint complexity, and primitive confusion remains the dominant failure mode.
+                    </p>
+                </div>
+
+                <div class="finding-grid">
+                    <article class="finding-card reveal">
+                        <div class="finding-kicker">Coverage vs. geometry</div>
+                        <div class="finding-value text-gradient">19 pts</div>
+                        <h3>Models find the parts, not the places.</h3>
+                        <p>Mean coverage is 84% while mean geometry is 65%. Producing the right primitive types is markedly easier than placing them correctly.</p>
+                    </article>
+                    <article class="finding-card reveal">
+                        <div class="finding-kicker">Constraint complexity</div>
+                        <div class="finding-value text-gradient">−18 pts</div>
+                        <h3>Assembly phases are the inflection point.</h3>
+                        <p>Phase 1 and 2 averages sit near 80%, while Phase 3 and 4 fall to roughly 61–64% as clearances and dependency chains accumulate.</p>
+                    </article>
+                    <article class="finding-card reveal">
+                        <div class="finding-kicker">Failure taxonomy</div>
+                        <div class="finding-value text-gradient">#1</div>
+                        <h3>Primitive type confusion leads errors.</h3>
+                        <p>Models systematically substitute one primitive for another, then build a plausible but geometrically invalid assembly around the mistake.</p>
+                    </article>
+                </div>
+
+                <div class="figure-grid" style="margin-top:32px">
+                    <figure class="figure-card reveal" data-full="results/fig1_overall_rankings.png" data-caption="Figure 1 — Overall model rankings across the C2CAD-Bench spectrum.">
+                        <div class="figure-media">
+                            <img src="results/fig1_overall_rankings.png" alt="Overall model rankings heatmap" loading="lazy" decoding="async">
+                            <span class="figure-zoom"><svg class="icon"><use href="#i-zoom"></use></svg></span>
+                        </div>
+                        <div class="figure-body">
+                            <span class="figure-tag">Rankings</span>
+                            <h3>Overall model rankings</h3>
+                            <p>Comparative evaluation of 13 frontier LLMs across all benchmark phases.</p>
+                        </div>
+                    </figure>
+
+                    <figure class="figure-card reveal" data-full="results/fig2_score_components.png" data-caption="Figure 2 — Coverage, geometry and semantic score components by model.">
+                        <div class="figure-media">
+                            <img src="results/fig2_score_components.png" alt="Score components by model" loading="lazy" decoding="async">
+                            <span class="figure-zoom"><svg class="icon"><use href="#i-zoom"></use></svg></span>
+                        </div>
+                        <div class="figure-body">
+                            <span class="figure-tag">Scoring</span>
+                            <h3>Score components</h3>
+                            <p>Decomposition of the three-axis score reveals a persistent coverage–geometry gap.</p>
+                        </div>
+                    </figure>
+
+                    <figure class="figure-card reveal" data-full="results/fig4_phase_performance.png" data-caption="Figure 4 — Average performance across the four cognitive phases.">
+                        <div class="figure-media">
+                            <img src="results/fig4_phase_performance.png" alt="Performance by phase" loading="lazy" decoding="async">
+                            <span class="figure-zoom"><svg class="icon"><use href="#i-zoom"></use></svg></span>
+                        </div>
+                        <div class="figure-body">
+                            <span class="figure-tag">Phases</span>
+                            <h3>Performance by phase</h3>
+                            <p>Assembly-heavy phases separate frontier models far more than foundational phases.</p>
+                        </div>
+                    </figure>
+
+                    <figure class="figure-card reveal" data-full="results/fig5_difficulty_scaling.png" data-caption="Figure 5 — How difficulty scales with family size and constraint count.">
+                        <div class="figure-media">
+                            <img src="results/fig5_difficulty_scaling.png" alt="Difficulty scaling" loading="lazy" decoding="async">
+                            <span class="figure-zoom"><svg class="icon"><use href="#i-zoom"></use></svg></span>
+                        </div>
+                        <div class="figure-body">
+                            <span class="figure-tag">Scaling</span>
+                            <h3>Difficulty scaling</h3>
+                            <p>Constraint complexity, rather than raw shape count, drives the steepest drops.</p>
+                        </div>
+                    </figure>
+
+                    <figure class="figure-card reveal" data-full="results/fig6_failure_taxonomy.png" data-caption="Figure 6 — Failure taxonomy across model outputs.">
+                        <div class="figure-media">
+                            <img src="results/fig6_failure_taxonomy.png" alt="Failure taxonomy" loading="lazy" decoding="async">
+                            <span class="figure-zoom"><svg class="icon"><use href="#i-zoom"></use></svg></span>
+                        </div>
+                        <div class="figure-body">
+                            <span class="figure-tag">Failures</span>
+                            <h3>Failure taxonomy</h3>
+                            <p>Primitive substitution, coordinate drift and missing constraint propagation dominate.</p>
+                        </div>
+                    </figure>
+
+                    <figure class="figure-card reveal" data-full="results/fig9_radar_profiles.png" data-caption="Figure 9 — Radar profiles of model strengths across score dimensions.">
+                        <div class="figure-media">
+                            <img src="results/fig9_radar_profiles.png" alt="Radar profiles" loading="lazy" decoding="async">
+                            <span class="figure-zoom"><svg class="icon"><use href="#i-zoom"></use></svg></span>
+                        </div>
+                        <div class="figure-body">
+                            <span class="figure-tag">Profiles</span>
+                            <h3>Model radar profiles</h3>
+                            <p>Models with similar overall scores can have very different component strengths.</p>
+                        </div>
+                    </figure>
+
+                    <figure class="figure-card reveal" data-full="results/fig11_violin_distributions.png" data-caption="Figure 11 — Score distributions reveal variance hidden by averages.">
+                        <div class="figure-media">
+                            <img src="results/fig11_violin_distributions.png" alt="Score distributions" loading="lazy" decoding="async">
+                            <span class="figure-zoom"><svg class="icon"><use href="#i-zoom"></use></svg></span>
+                        </div>
+                        <div class="figure-body">
+                            <span class="figure-tag">Distributions</span>
+                            <h3>Score distributions</h3>
+                            <p>Average scores hide large per-case variance and catastrophic outliers.</p>
+                        </div>
+                    </figure>
+
+                    <figure class="figure-card reveal" data-full="results/fig12_vendor_analysis.png" data-caption="Figure 12 — Vendor-level analysis of model families.">
+                        <div class="figure-media">
+                            <img src="results/fig12_vendor_analysis.png" alt="Vendor analysis" loading="lazy" decoding="async">
+                            <span class="figure-zoom"><svg class="icon"><use href="#i-zoom"></use></svg></span>
+                        </div>
+                        <div class="figure-body">
+                            <span class="figure-tag">Vendors</span>
+                            <h3>Vendor-level analysis</h3>
+                            <p>Provider families show distinct trade-offs between coverage and geometric fidelity.</p>
+                        </div>
+                    </figure>
+                </div>
+            </div>
+        </section>
+
+        <!-- Evaluation protocol -->
+        <section class="section" id="protocol">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="eyebrow">Evaluation protocol</span>
+                    <h2 class="section-title">One score, three gated axes.</h2>
+                    <p class="section-lead">
+                        Scoring is deterministic and inspection-only. Each axis isolates a different
+                        failure mode, and geometric credit is gated by primitive matching.
+                    </p>
+                </div>
+
+                <div class="protocol-grid">
+                    <article class="protocol-card reveal">
+                        <div class="protocol-index">AXIS 01</div>
+                        <h3>Coverage</h3>
+                        <p>Did the model produce every primitive implied by the specification?</p>
+                        <span class="protocol-formula">Cov = matched / |GT|</span>
+                    </article>
+                    <article class="protocol-card reveal">
+                        <div class="protocol-index">AXIS 02</div>
+                        <h3>Geometry</h3>
+                        <p>Are centers, dimensions, axes and orientations within tolerance?</p>
+                        <span class="protocol-formula">Geom = 1 − normalized error</span>
+                    </article>
+                    <article class="protocol-card reveal">
+                        <div class="protocol-index">AXIS 03</div>
+                        <h3>Semantic</h3>
+                        <p>Does each primitive carry the right role and participate in the right relationships?</p>
+                        <span class="protocol-formula">Sem = weighted role match</span>
+                    </article>
+                </div>
+
+                <div class="protocol-foot reveal">
+                    <svg class="icon" style="color:var(--accent)"><use href="#i-shield"></use></svg>
+                    <span><strong>Gated scoring.</strong> Geometry is only credited for correctly matched primitives; coverage cannot be redeemed by plausible-looking extra geometry. Final scores are the weighted aggregate of the three axes.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Citation -->
+        <section class="section section--soft" id="citation">
+            <div class="container">
+                <div class="section-head section-head--split reveal">
+                    <div>
+                        <span class="eyebrow">Citation</span>
+                        <h2 class="section-title">Use C2CAD-Bench in your research.</h2>
+                        <p class="section-lead">If this benchmark helps your work, please cite the paper.</p>
+                    </div>
+                    <a class="btn btn-ghost" href="https://github.com/neurips2026submission-alt/c2cad-bench" target="_blank" rel="noopener">
+                        <svg class="icon"><use href="#i-github"></use></svg>
+                        View on GitHub
+                    </a>
+                </div>
+
+                <div class="citation-card reveal">
+                    <div class="citation-head">
+                        <h3>BibTeX</h3>
+                        <button class="btn btn-sm" type="button" data-copy-target="bibtex">
+                            <svg class="icon"><use href="#i-copy"></use></svg>
+                            <span>Copy</span>
+                        </button>
+                    </div>
 <pre id="bibtex">@article{c2cad2026,
-  title={C2CAD-Bench: A Large-Scale Benchmark for 3D Spatial Reasoning in CAD},
-  author={Anonymous Authors},
-  journal={arXiv preprint arXiv:26xx.xxxxx},
-  year={2026}
+  title   = {C2CAD-Bench: A Large-Scale Benchmark for 3D Spatial Reasoning in CAD},
+  author  = {Anonymous Authors},
+  journal = {arXiv preprint arXiv:26xx.xxxxx},
+  year    = {2026}
 }</pre>
                 </div>
             </div>
         </section>
 
-    <footer class="footer" style="padding: 60px 0; border-top: 1px solid var(--border);">
-        <div class="container has-text-centered">
-            <p class="font-heading" style="font-weight: 700; font-size: 1.25rem; color: var(--text-main);">C2CAD-Bench</p>
-            <p class="mt-2 text-muted">&copy; 2026 C2CAD-Bench Research Team. Distributed under Creative Commons Attribution 4.0 International.</p>
+        <!-- CTA -->
+        <section class="section section--tight">
+            <div class="container">
+                <div class="cta-band reveal">
+                    <div>
+                        <h2>Inspect every primitive yourself.</h2>
+                        <p>
+                            The 3D visualizer lets you compare ground truth against any model, switch
+                            difficulty levels, and inspect the exact prompt behind each case.
+                        </p>
+                    </div>
+                    <div class="btn-row">
+                        <a class="btn btn-primary" href="ui/visualizer.html">
+                            <svg class="icon"><use href="#i-cube"></use></svg>
+                            Open 3D Visualizer
+                        </a>
+                        <a class="btn btn-ghost" href="ui/results.html">
+                            <svg class="icon"><use href="#i-chart"></use></svg>
+                            Scoreboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a class="brand" href="index.html">
+                        <span class="brand-mark"><svg class="icon"><use href="#i-cube"></use></svg></span>
+                        <span>C2CAD-Bench</span>
+                    </a>
+                    <p class="footer-about">
+                        A large-scale benchmark for evaluating multi-step 3D spatial reasoning in
+                        large language models, without code execution or rendering.
+                    </p>
+                </div>
+                <div>
+                    <div class="footer-title">Explore</div>
+                    <nav class="footer-links" aria-label="Footer explore">
+                        <a href="#abstract">Abstract</a>
+                        <a href="#benchmark">Benchmark</a>
+                        <a href="#leaderboard">Leaderboard</a>
+                        <a href="#analysis">Analysis</a>
+                        <a href="#citation">Citation</a>
+                    </nav>
+                </div>
+                <div>
+                    <div class="footer-title">Resources</div>
+                    <nav class="footer-links" aria-label="Footer resources">
+                        <a href="ui/results.html">Full scoreboard</a>
+                        <a href="ui/visualizer.html">3D visualizer</a>
+                        <a href="https://arxiv.org/abs/xxxx.xxxxx" target="_blank" rel="noopener">Paper</a>
+                        <a href="https://github.com/neurips2026submission-alt/c2cad-bench" target="_blank" rel="noopener">Code &amp; data</a>
+                    </nav>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; <span data-year>2026</span> C2CAD-Bench Research Team. Distributed under CC BY 4.0.</span>
+                <span>Built for reproducible spatial reasoning evaluation.</span>
+            </div>
         </div>
     </footer>
 
+    <!-- Data loader -->
     <script>
-        // Scroll Reveal logic
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+        (function () {
+            var ts = Date.now();
+            var loaded = false;
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-        function copyCitation() {
-            const bib = document.getElementById('bibtex').innerText;
-            navigator.clipboard.writeText(bib).then(() => {
-                const btn = document.querySelector('.copy-btn span:last-child');
-                btn.innerText = 'Copied!';
-                setTimeout(() => btn.innerText = 'Copy', 2000);
-            });
-        }
-    </script>
-
-    <!-- Data Loader -->
-    <script>
-        (function() {
-            const phases = ['p1', 'p2', 'p3', 'p4'];
-            const ts = Date.now();
-            
-            async function loadScripts() {
-                const load = (src) => new Promise((resolve, reject) => {
-                    const tag = document.createElement('script');
+            function load(src) {
+                return new Promise(function (resolve, reject) {
+                    var tag = document.createElement('script');
                     tag.src = src;
                     tag.onload = resolve;
-                    tag.onerror = () => reject(new Error(`Failed to load ${src}`));
+                    tag.onerror = function () {
+                        reject(new Error('Failed to load ' + src));
+                    };
                     document.head.appendChild(tag);
                 });
-
-                try {
-                    // Load main DB and phases
-                    await load(`./results/showcase_db.js?v=${ts}`);
-                    await Promise.all(phases.map(p => load(`./results/showcase_db_${p}.js?v=${ts}`)));
-                    console.log('Homepage data loaded successfully.');
-                    window.dispatchEvent(new Event('CG3D_DATA_READY'));
-                    window.dispatchEvent(new Event('CG3D_SCORE_READY'));
-                } catch (e) {
-                    console.error('Data loading error:', e);
-                }
             }
-            window._loadData = loadScripts;
-            loadScripts();
+
+            function fail(error) {
+                console.error('C2CAD data loading error:', error);
+                window.CG3D_DATA_FAILED = error;
+                window.dispatchEvent(new CustomEvent('CG3D_DATA_ERROR', { detail: error }));
+            }
+
+            function loadData() {
+                return load('./results/showcase_db.js?v=' + ts)
+                    .then(function () {
+                        loaded = true;
+                        window.dispatchEvent(new Event('CG3D_DATA_READY'));
+                        window.dispatchEvent(new Event('CG3D_SCORE_READY'));
+                    })
+                    .catch(fail);
+            }
+
+            window._loadData = function () {
+                return loaded ? Promise.resolve() : loadData();
+            };
+
+            loadData();
+
+            window.setTimeout(function () {
+                var host = document.getElementById('home-showcase-container');
+                if (host && host.querySelector('.showcase-loading')) {
+                    host.innerHTML = '<div class="showcase-loading"><p>The live 3D showcase could not start. ' +
+                        '<a href="ui/visualizer.html" style="color:var(--accent);text-decoration:underline">Open the visualizer</a> ' +
+                        'or reload the page.</p></div>';
+                }
+            }, 30000);
         })();
     </script>
 
-    <!-- Three.js Import Map -->
     <script type="importmap">
         {
             "imports": {
@@ -333,7 +896,9 @@
             }
         }
     </script>
+
+    <script src="js/site.js" defer></script>
+    <script src="js/scoreboard.js" defer></script>
     <script type="module" src="js/home_table.js"></script>
-    <script src="js/scoreboard.js"></script>
 </body>
 </html>

@@ -1,123 +1,241 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>C2CAD-Bench 3D Visualizer</title>
-    <!-- Fonts -->
+    <meta name="description" content="Inspect C2CAD-Bench ground truth and model-generated 3D geometry side by side, across all phases, families and difficulty levels.">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234f46e5'/%3E%3Cpath d='M16 6 7 11v10l9 5 9-5V11l-9-5Z' fill='none' stroke='white' stroke-width='1.8'/%3E%3Cpath d='m7 11 9 5 9-5M16 16v10' fill='none' stroke='white' stroke-width='1.8'/%3E%3C/svg%3E">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&family=Quicksand:wght@300;400;500;600;700&family=Roboto+Mono&display=swap" rel="stylesheet">
-    
-    <!-- Frameworks -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css">
-    <script src="https://kit.fontawesome.com/5fd1dd8417.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Sora:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
 
-    <!-- Styles -->
     <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/c2cad.css">
     <link rel="stylesheet" href="../css/visualizer.css">
-    
-    <!-- Data Loader -->
+
     <script>
-        (function() {
-            const phases = ['p1', 'p2', 'p3', 'p4'];
-            const ts = Date.now();
-            
-            async function loadScripts() {
-                const load = (src) => new Promise((resolve, reject) => {
-                    const tag = document.createElement('script');
+        (function () {
+            try {
+                var saved = localStorage.getItem('c2cad-theme');
+                if (saved === 'dark' || saved === 'light') {
+                    document.documentElement.setAttribute('data-theme', saved);
+                }
+            } catch (e) { /* noop */ }
+        })();
+    </script>
+
+    <script>
+        (function () {
+            var phases = ['p1', 'p2', 'p3', 'p4'];
+            var ts = Date.now();
+            var loaded = false;
+
+            function load(src) {
+                return new Promise(function (resolve, reject) {
+                    var tag = document.createElement('script');
                     tag.src = src;
                     tag.onload = resolve;
-                    tag.onerror = () => reject(new Error(`Failed to load ${src}`));
+                    tag.onerror = function () {
+                        reject(new Error('Failed to load ' + src));
+                    };
                     document.head.appendChild(tag);
                 });
-
-                try {
-                    await Promise.all(phases.map(p => load(`../results/showcase_db_${p}.js?v=${ts}`)));
-                    console.log('Visualizer data loaded successfully.');
-                    window.dispatchEvent(new Event('CG3D_DATA_READY'));
-                } catch (e) {
-                    console.error('Data loading error:', e);
-                    const status = document.getElementById('empty-state');
-                    if (status) {
-                        status.innerHTML = `
-                            <div class="notification is-danger is-light has-text-centered">
-                                <h3 class="title is-4">⚠ Connection Error</h3>
-                                <p>Failed to load benchmark database files.</p>
-                                <button onclick="location.reload()" class="button is-dark mt-4">Try Again</button>
-                            </div>
-                        `;
-                    }
-                }
             }
-            window._loadData = loadScripts;
+
+            function loadData() {
+                if (loaded) return Promise.resolve();
+                return Promise.all(
+                    phases.map(function (phase) {
+                        return load('../results/showcase_db_' + phase + '.js?v=' + ts);
+                    })
+                )
+                    .then(function () {
+                        loaded = true;
+                        window.dispatchEvent(new Event('CG3D_DATA_READY'));
+                    })
+                    .catch(function (error) {
+                        console.error('Visualizer data loading error:', error);
+                        window.CG3D_DATA_FAILED = error;
+                        window.dispatchEvent(new CustomEvent('CG3D_DATA_ERROR', { detail: error }));
+                    });
+            }
+
+            window._loadData = loadData;
+            loadData();
+
+            window.setTimeout(function () {
+                var content = document.getElementById('content');
+                if (content && content.querySelector('#empty-state')) {
+                    content.innerHTML = '<div class="viz-empty">' +
+                        '<h3>The 3D engine could not start</h3>' +
+                        '<p>This is usually caused by a blocked CDN or WebGL support. Check your connection and reload.</p>' +
+                        '<a class="btn btn-primary" href="">Reload visualizer</a>' +
+                        '</div>';
+                }
+            }, 30000);
         })();
     </script>
 </head>
-<body class="light-theme">
-    <canvas id="main-canvas"></canvas>
+<body class="viz-page" style="background: var(--bg)">
 
-    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
-        <div class="container">
-            <div class="navbar-brand">
-                <a class="navbar-item navbar-logo" href="../index.html">
-                    C2CAD-Bench
-                </a>
-            </div>
-            <div class="navbar-menu">
-                <div class="navbar-end">
-                    <a class="navbar-item" href="../index.html">Abstract</a>
-                    <a class="navbar-item" href="../index.html#benchmarks">Benchmarks</a>
-                    <a class="navbar-item" href="results.html">Scoreboard</a>
-                    <a class="navbar-item is-active" href="visualizer.html">3D Visualizer</a>
+    <div class="scroll-progress" aria-hidden="true"></div>
+
+    <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+        <symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 2.5 3.5 7.4v9.2L12 21.5l8.5-4.9V7.4L12 2.5Z"/><path d="m3.5 7.4 8.5 4.9 8.5-4.9M12 12.3v9.2"/></symbol>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+        <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+        <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"/></symbol>
+        <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+        <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+        <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></symbol>
+        <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+    </svg>
+
+    <canvas id="main-canvas" aria-hidden="true"></canvas>
+
+    <header class="site-header">
+        <div class="container nav-inner">
+            <a class="brand" href="../index.html" aria-label="C2CAD-Bench home">
+                <span class="brand-mark"><svg class="icon"><use href="#i-cube"></use></svg></span>
+                <span>C2CAD-Bench<span class="brand-sub">3D Spatial Reasoning</span></span>
+            </a>
+
+            <div class="nav-menu" id="site-nav-menu">
+                <nav class="nav-links" aria-label="Primary">
+                    <a class="nav-link" href="../index.html#abstract">Abstract</a>
+                    <a class="nav-link" href="../index.html#benchmark">Benchmark</a>
+                    <a class="nav-link" href="results.html">Leaderboard</a>
+                    <a class="nav-link" href="../index.html#analysis">Analysis</a>
+                    <a class="nav-link is-active" href="visualizer.html">Visualizer</a>
+                </nav>
+                <div class="nav-actions">
+                    <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Switch theme" aria-pressed="false">
+                        <svg class="icon icon-sun"><use href="#i-sun"></use></svg>
+                        <svg class="icon icon-moon"><use href="#i-moon"></use></svg>
+                    </button>
+                    <a class="btn btn-ghost btn-sm" href="../index.html">Home</a>
+                    <a class="btn btn-primary btn-sm" href="results.html">
+                        <svg class="icon"><use href="#i-chart"></use></svg>
+                        Scoreboard
+                    </a>
                 </div>
             </div>
-        </div>
-    </nav>
 
-    <div id="ui-controls" class="is-flex is-align-items-center is-justify-content-space-between p-4" style="background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); border-radius: 12px; margin: 20px; border: 1px solid rgba(0,0,0,0.1); box-shadow: var(--card-shadow);">
-        <div class="field is-horizontal is-marginless">
-            <div class="field-label is-normal">
-                <label class="label" style="font-family:'Quicksand'; font-weight:600; color: var(--text-main);">Model Selection:</label>
+            <button class="nav-toggle" type="button" data-nav-toggle aria-controls="site-nav-menu" aria-expanded="false" aria-label="Toggle navigation">
+                <svg class="icon icon-menu"><use href="#i-menu"></use></svg><svg class="icon icon-close"><use href="#i-close"></use></svg>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="viz-hero">
+            <div class="container">
+                <nav class="breadcrumb" aria-label="Breadcrumb" style="display:flex;align-items:center;gap:8px;margin-bottom:14px;color:var(--muted);font-size:12.5px">
+                    <a href="../index.html">Home</a>
+                    <svg class="icon" style="width:13px;height:13px;opacity:.6"><use href="#i-arrow"></use></svg>
+                    <span>3D Visualizer</span>
+                </nav>
+                <div class="badge"><span class="badge-dot"></span>Interactive inspection</div>
+                <h1 class="viz-title" style="margin-top:14px">Ground truth, meet model output.</h1>
+                <p class="viz-lead">
+                    Compare parametric reference geometry with any model across all 25 families.
+                    Switch difficulty levels, orbit the viewports, toggle X-ray or wireframe, and read
+                    the exact prompt behind every case.
+                </p>
             </div>
-            <div class="field-body">
-                <div class="control">
-                    <div class="select is-rounded is-small">
-                        <select id="modelSelector"></select>
+        </section>
+
+        <div class="viz-toolbar">
+            <div class="container">
+                <div class="viz-toolbar-inner">
+                    <div class="viz-control">
+                        <label for="modelSelector">Model</label>
+                        <select id="modelSelector" class="viz-select" aria-label="Select a model to inspect"></select>
                     </div>
+
+                    <div class="viz-phase-tabs" id="phase-bar-container" role="group" aria-label="Select phase">
+                        <button class="viz-phase-tab is-active" type="button" data-phase="1">Phase 1</button>
+                        <button class="viz-phase-tab" type="button" data-phase="2">Phase 2</button>
+                        <button class="viz-phase-tab" type="button" data-phase="3">Phase 3</button>
+                        <button class="viz-phase-tab" type="button" data-phase="4">Phase 4</button>
+                    </div>
+
+                    <span class="viz-spacer"></span>
+
+                    <span id="overallScore" class="overall-badge" aria-live="polite"></span>
+
+                    <button class="btn btn-ghost btn-sm" type="button" data-action="reload" title="Reload data">
+                        <svg class="icon" style="width:15px;height:15px"><use href="#i-rotate"></use></svg>
+                        Reload
+                    </button>
+                </div>
+
+                <div class="viz-legend">
+                    <span class="legend-group"><span class="legend-swatch" style="background:#6366f1"></span>Box</span>
+                    <span class="legend-group"><span class="legend-swatch" style="background:#0ea5e9"></span>Cylinder</span>
+                    <span class="legend-group"><span class="legend-swatch" style="background:#ec4899"></span>Sphere</span>
+                    <span class="legend-group"><span class="legend-swatch" style="background:#f59e0b"></span>Pipe</span>
+                    <span class="legend-group"><span class="legend-swatch" style="background:#14b8a6"></span>Beam</span>
+                    <span class="legend-group" style="margin-left:auto">
+                        <span class="legend-swatch" style="background:var(--good)"></span>Strong
+                        <span class="legend-swatch" style="background:var(--warn);margin-left:10px"></span>Partial
+                        <span class="legend-swatch" style="background:var(--bad);margin-left:10px"></span>Weak
+                    </span>
                 </div>
             </div>
         </div>
-        <div class="is-flex is-align-items-center" style="gap:16px;">
-            <button onclick="location.reload(true)" class="button is-small is-rounded is-light">↻ Reload</button>
-            <div id="overallScore" class="overall-badge" style="font-family:'Josefin Sans'; color: var(--accent);"></div>
+
+        <div class="container viz-content" id="content">
+            <div class="viz-empty" id="empty-state">
+                <div class="spinner"></div>
+                <h3>Preparing the 3D environment</h3>
+                <p>Loading benchmark geometry…</p>
+            </div>
         </div>
-    </div>
+    </main>
 
-    <div id="phase-bar" class="tabs is-toggle is-toggle-rounded is-centered mb-4">
-        <ul>
-            <li class="is-active" data-phase="1"><a>Phase 1</a></li>
-            <li data-phase="2"><a>Phase 2</a></li>
-            <li data-phase="3"><a>Phase 3</a></li>
-            <li data-phase="4"><a>Phase 4</a></li>
-        </ul>
-    </div>
-
-    <div id="content">
-        <div id="empty-state" class="has-text-grey-light" style="font-family:'Quicksand';">Preparing 3D environment...</div>
-    </div>
-
-    <footer class="footer p-4" style="background: transparent;">
-        <div class="container has-text-centered has-text-white-ter">
-            <p>
-                <strong>C2CAD-Bench</strong> by Anonymous Authors. 
-                Released under the MIT License.
-            </p>
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a class="brand" href="../index.html">
+                        <span class="brand-mark"><svg class="icon"><use href="#i-cube"></use></svg></span>
+                        <span>C2CAD-Bench</span>
+                    </a>
+                    <p class="footer-about">
+                        A large-scale benchmark for evaluating multi-step 3D spatial reasoning in
+                        large language models, without code execution or rendering.
+                    </p>
+                </div>
+                <div>
+                    <div class="footer-title">Explore</div>
+                    <nav class="footer-links" aria-label="Footer explore">
+                        <a href="../index.html#abstract">Abstract</a>
+                        <a href="../index.html#benchmark">Benchmark</a>
+                        <a href="results.html">Scoreboard</a>
+                        <a href="../index.html#analysis">Analysis</a>
+                    </nav>
+                </div>
+                <div>
+                    <div class="footer-title">Resources</div>
+                    <nav class="footer-links" aria-label="Footer resources">
+                        <a href="visualizer.html">3D visualizer</a>
+                        <a href="../index.html#citation">Citation</a>
+                        <a href="https://arxiv.org/abs/xxxx.xxxxx" target="_blank" rel="noopener">Paper</a>
+                        <a href="https://github.com/neurips2026submission-alt/c2cad-bench" target="_blank" rel="noopener">Code &amp; data</a>
+                    </nav>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; <span data-year>2026</span> C2CAD-Bench Research Team. Distributed under CC BY 4.0.</span>
+                <a href="../index.html">Back to overview</a>
+            </div>
         </div>
     </footer>
 
-    <!-- Three.js r160 ES modules -->
     <script type="importmap">
         {
             "imports": {
@@ -127,18 +245,7 @@
         }
     </script>
 
+    <script src="../js/site.js"></script>
     <script type="module" src="../js/visualizer.js"></script>
-    <script>
-        // Start loading data
-        window._loadData();
-        
-        // Sync Bulma tabs with visualizer.js expectations
-        document.querySelectorAll('#phase-bar li').forEach(tab => {
-            tab.onclick = function() {
-                document.querySelectorAll('#phase-bar li').forEach(t => t.classList.remove('is-active'));
-                this.classList.add('is-active');
-            };
-        });
-    </script>
 </body>
 </html>

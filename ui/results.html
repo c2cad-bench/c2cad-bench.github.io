@@ -1,189 +1,263 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>C2CAD-Bench Scoreboard</title>
-    <!-- Fonts -->
+    <meta name="description" content="Full evaluation scoreboard for C2CAD-Bench across 23 frontier LLMs, 25 test families and 75 test cases.">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234f46e5'/%3E%3Cpath d='M16 6 7 11v10l9 5 9-5V11l-9-5Z' fill='none' stroke='white' stroke-width='1.8'/%3E%3Cpath d='m7 11 9 5 9-5M16 16v10' fill='none' stroke='white' stroke-width='1.8'/%3E%3C/svg%3E">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&family=Quicksand:wght@300;400;500;600;700&family=Roboto+Mono&display=swap" rel="stylesheet">
-    
-    <!-- Frameworks -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css">
-    <script src="https://kit.fontawesome.com/5fd1dd8417.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Sora:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
 
-    <!-- Styles -->
     <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/c2cad.css">
     <link rel="stylesheet" href="../css/dashboard.css">
-    
-    <style>
-        .scoreboard-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: var(--card-shadow);
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th {
-            background: var(--bg-subtle);
-            color: var(--accent);
-            font-family: 'Josefin Sans', sans-serif;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.05em;
-            padding: 16px !important;
-            border-bottom: 2px solid var(--border);
-        }
-        td {
-            padding: 14px 16px !important;
-            border-bottom: 1px solid var(--border);
-            color: var(--text-main);
-        }
-        .dashboard-header h1 {
-            font-family: 'Josefin Sans', sans-serif;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--text-main), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-    </style>
 
-    <!-- Data Loader -->
     <script>
-        (function() {
-            const ts = Date.now();
-            async function loadData() {
-                const load = (src) => new Promise((resolve, reject) => {
-                    const tag = document.createElement('script');
-                    tag.src = src;
-                    tag.onload = resolve;
-                    tag.onerror = () => reject(new Error(`Failed to load ${src}`));
-                    document.head.appendChild(tag);
-                });
-
-                try {
-                    await load(`../results/showcase_db.js?v=${ts}`);
-                    console.log('Scoreboard data loaded successfully.');
-                    window.dispatchEvent(new Event('CG3D_SCORE_READY'));
-                } catch (e) {
-                    console.error('Scoreboard load error:', e);
-                    const status = document.getElementById('table-body');
-                    if (status) {
-                        status.innerHTML = `<tr><td colspan="100%" style="text-align:center; padding: 60px; color:#f43f5e; background:rgba(244,63,94,0.05); border-radius:12px;">
-                            <h3 style="margin-top:0">⚠ Data Load Error</h3>
-                            <p>Could not load the evaluation database.</p>
-                        </td></tr>`;
-                    }
+        (function () {
+            try {
+                var saved = localStorage.getItem('c2cad-theme');
+                if (saved === 'dark' || saved === 'light') {
+                    document.documentElement.setAttribute('data-theme', saved);
                 }
-            }
-            window._loadData = loadData;
+            } catch (e) { /* noop */ }
         })();
     </script>
 </head>
 <body>
-    
-    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
-        <div class="container">
-            <div class="navbar-brand">
-                <a class="navbar-item navbar-logo" href="../index.html">
-                    C2CAD-Bench
-                </a>
+
+    <div class="scroll-progress" aria-hidden="true"></div>
+
+    <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+        <symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 2.5 3.5 7.4v9.2L12 21.5l8.5-4.9V7.4L12 2.5Z"/><path d="m3.5 7.4 8.5 4.9 8.5-4.9M12 12.3v9.2"/></symbol>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+        <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></symbol>
+        <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+        <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+        <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"/></symbol>
+        <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+        <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+        <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
+        <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+    </svg>
+
+    <header class="site-header">
+        <div class="container nav-inner">
+            <a class="brand" href="../index.html" aria-label="C2CAD-Bench home">
+                <span class="brand-mark"><svg class="icon"><use href="#i-cube"></use></svg></span>
+                <span>C2CAD-Bench<span class="brand-sub">3D Spatial Reasoning</span></span>
+            </a>
+
+            <div class="nav-menu" id="site-nav-menu">
+                <nav class="nav-links" aria-label="Primary">
+                    <a class="nav-link" href="../index.html#abstract">Abstract</a>
+                    <a class="nav-link" href="../index.html#benchmark">Benchmark</a>
+                    <a class="nav-link is-active" href="results.html">Leaderboard</a>
+                    <a class="nav-link" href="../index.html#analysis">Analysis</a>
+                    <a class="nav-link" href="../index.html#citation">Citation</a>
+                </nav>
+                <div class="nav-actions">
+                    <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Switch theme" aria-pressed="false">
+                        <svg class="icon icon-sun"><use href="#i-sun"></use></svg>
+                        <svg class="icon icon-moon"><use href="#i-moon"></use></svg>
+                    </button>
+                    <a class="btn btn-ghost btn-sm" href="../index.html">Home</a>
+                    <a class="btn btn-primary btn-sm" href="visualizer.html">
+                        <svg class="icon"><use href="#i-cube"></use></svg>
+                        3D Visualizer
+                    </a>
+                </div>
             </div>
-            <div class="navbar-menu">
-                <div class="navbar-end">
-                    <a class="navbar-item" href="../index.html">Abstract</a>
-                    <a class="navbar-item" href="../index.html#benchmarks">Benchmarks</a>
-                    <a class="navbar-item is-active" href="results.html">Scoreboard</a>
-                    <div class="navbar-item">
-                        <div class="buttons">
-                            <a class="button link-button is-rounded" href="visualizer.html">
-                                <span class="icon"><i class="fas fa-cube"></i></span>
-                                <span>3D Visualizer</span>
-                            </a>
-                        </div>
+
+            <button class="nav-toggle" type="button" data-nav-toggle aria-controls="site-nav-menu" aria-expanded="false" aria-label="Toggle navigation">
+                <svg class="icon icon-menu"><use href="#i-menu"></use></svg><svg class="icon icon-close"><use href="#i-close"></use></svg>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero">
+            <div class="container">
+                <nav class="breadcrumb" aria-label="Breadcrumb">
+                    <a href="../index.html">Home</a>
+                    <svg class="icon"><use href="#i-arrow"></use></svg>
+                    <span>Scoreboard</span>
+                </nav>
+
+                <div class="badge"><span class="badge-dot"></span>Global evaluation · 75 cases</div>
+                <h1 class="page-title" style="margin-top:16px">Evaluation scoreboard</h1>
+                <p class="page-lead">
+                    Multi-step spatial reasoning results across 23 frontier LLMs. Expand any family to
+                    inspect the Coverage, Geometry and Semantic breakdown for every difficulty level.
+                </p>
+
+                <div class="btn-row page-hero-actions">
+                    <button id="export-csv-btn" class="btn btn-ghost" type="button">
+                        <svg class="icon"><use href="#i-download"></use></svg>
+                        Export CSV
+                    </button>
+                    <a class="btn btn-primary" href="visualizer.html">
+                        <svg class="icon"><use href="#i-cube"></use></svg>
+                        Open 3D visualizer
+                    </a>
+                </div>
+
+                <div class="kpi-strip">
+                    <div class="kpi">
+                        <div class="kpi-value">23</div>
+                        <div class="kpi-label">Frontier models</div>
+                    </div>
+                    <div class="kpi">
+                        <div class="kpi-value">25</div>
+                        <div class="kpi-label">Test families</div>
+                    </div>
+                    <div class="kpi">
+                        <div class="kpi-value">75</div>
+                        <div class="kpi-label">Test cases</div>
+                    </div>
+                    <div class="kpi">
+                        <div class="kpi-value">83%</div>
+                        <div class="kpi-label">Best overall score</div>
                     </div>
                 </div>
             </div>
-        </div>
-    </nav>
+        </section>
 
-    <div class="container py-6 mt-6">
-        <div class="dashboard-header mb-6">
-            <h1 class="title is-2">Evaluation Scoreboard</h1>
-            <p class="subtitle is-5">Multi-step spatial reasoning benchmarks across frontier LLMs.</p>
-        </div>
+        <div class="dashboard-main">
+            <div class="container">
+                <div id="podium" class="podium-section"></div>
 
-        <div class="is-flex is-align-items-center is-flex-wrap-wrap mb-5" style="gap: 12px;">
-            <div class="model-toggle-bar" id="model-toggle-bar" style="flex-grow: 1;">
-                <!-- Injected by JS -->
+                <div class="leaderboard-toolbar">
+                    <div class="model-toggle-bar" id="model-toggle-bar">
+                        <span class="label">Models</span>
+                    </div>
+                    <button id="toggle-all-btn" class="btn btn-ghost btn-sm" type="button">Show all models</button>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-grid" id="summary-row"></div>
+                </div>
+
+                <div class="phase-tabs" id="phase-bar-container">
+                    <button class="phase-tab is-active" type="button" data-phase="0">All phases <span class="badge">75</span></button>
+                    <button class="phase-tab" type="button" data-phase="1">Phase 1 <span class="badge">18</span></button>
+                    <button class="phase-tab" type="button" data-phase="2">Phase 2 <span class="badge">18</span></button>
+                    <button class="phase-tab" type="button" data-phase="3">Phase 3 <span class="badge">18</span></button>
+                    <button class="phase-tab" type="button" data-phase="4">Phase 4 <span class="badge">21</span></button>
+                </div>
+
+                <div class="scoreboard-card">
+                    <div class="scoreboard-scroll">
+                        <table class="scoreboard-table">
+                            <thead id="table-head"></thead>
+                            <tbody id="table-body">
+                                <tr>
+                                    <td colspan="100%">
+                                        <div class="data-state">
+                                            <div class="spinner"></div>
+                                            <p>Loading evaluation data…</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <span class="legend-item"><span class="legend-swatch good"></span>Strong (&gt; 80)</span>
+                    <span class="legend-item"><span class="legend-swatch warn"></span>Partial (40–80)</span>
+                    <span class="legend-item"><span class="legend-swatch bad"></span>Weak (&lt; 40)</span>
+                    <span class="legend-item" style="margin-left:auto">
+                        <svg class="icon" style="width:14px;height:14px"><use href="#i-database"></use></svg>
+                        Scores are deterministic and rendered from the parametric benchmark database.
+                    </span>
+                </div>
             </div>
-            <button id="toggle-all-btn" class="button is-small is-rounded is-dark">
-                <span class="icon is-small"><i class="fas fa-eye"></i></span>
-                <span>Toggle All Views</span>
-            </button>
         </div>
+    </main>
 
-        <div class="summary-section mb-6">
-            <div class="summary-row" id="summary-row">
-                <!-- Injected by JS -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a class="brand" href="../index.html">
+                        <span class="brand-mark"><svg class="icon"><use href="#i-cube"></use></svg></span>
+                        <span>C2CAD-Bench</span>
+                    </a>
+                    <p class="footer-about">
+                        A large-scale benchmark for evaluating multi-step 3D spatial reasoning in
+                        large language models, without code execution or rendering.
+                    </p>
+                </div>
+                <div>
+                    <div class="footer-title">Explore</div>
+                    <nav class="footer-links" aria-label="Footer explore">
+                        <a href="../index.html#abstract">Abstract</a>
+                        <a href="../index.html#benchmark">Benchmark</a>
+                        <a href="results.html">Scoreboard</a>
+                        <a href="../index.html#analysis">Analysis</a>
+                    </nav>
+                </div>
+                <div>
+                    <div class="footer-title">Resources</div>
+                    <nav class="footer-links" aria-label="Footer resources">
+                        <a href="visualizer.html">3D visualizer</a>
+                        <a href="../index.html#citation">Citation</a>
+                        <a href="https://arxiv.org/abs/xxxx.xxxxx" target="_blank" rel="noopener">Paper</a>
+                        <a href="https://github.com/neurips2026submission-alt/c2cad-bench" target="_blank" rel="noopener">Code &amp; data</a>
+                    </nav>
+                </div>
             </div>
-        </div>
-
-        <div class="tabs is-boxed mb-5" id="phase-bar-container">
-            <ul id="phase-bar">
-                <li class="is-active phase-tab" data-phase="0"><a>All Phases <span class="tag is-rounded ml-2">75</span></a></li>
-                <li class="phase-tab" data-phase="1"><a>Phase 1 <span class="tag is-rounded ml-2">18</span></a></li>
-                <li class="phase-tab" data-phase="2"><a>Phase 2 <span class="tag is-rounded ml-2">18</span></a></li>
-                <li class="phase-tab" data-phase="3"><a>Phase 3 <span class="tag is-rounded ml-2">18</span></a></li>
-                <li class="phase-tab" data-phase="4"><a>Phase 4 <span class="tag is-rounded ml-2">21</span></a></li>
-            </ul>
-        </div>
-
-        <div class="scoreboard-card">
-            <table>
-                <thead id="table-head"></thead>
-                <tbody id="table-body">
-                    <tr><td colspan="100%" style="text-align:center; padding: 100px; color:#94a3b8;">
-                        <span class="icon is-large mb-4"><i class="fas fa-spinner fa-pulse"></i></span><br>
-                        Loading evaluation data...
-                    </td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <footer class="footer mt-6">
-        <div class="container has-text-centered">
-            <p>
-                <strong>C2CAD-Bench</strong> by Anonymous Authors. 
-                Released under the MIT License.
-            </p>
+            <div class="footer-bottom">
+                <span>&copy; <span data-year>2026</span> C2CAD-Bench Research Team. Distributed under CC BY 4.0.</span>
+                <a href="../index.html">Back to overview</a>
+            </div>
         </div>
     </footer>
 
-    <script src="../js/scoreboard.js"></script>
     <script>
-        // Initialize data loading
-        window._loadData();
-        
-        // Sync Bulma tabs with Scoreboard state
-        document.querySelectorAll('.phase-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('is-active'));
-                this.classList.add('is-active');
-                
-                const phase = this.getAttribute('data-phase');
-                if (window.Scoreboard && window.Scoreboard.filterByPhase) {
-                    window.Scoreboard.filterByPhase(phase);
-                }
-            });
-        });
+        (function () {
+            var ts = Date.now();
+            var loaded = false;
+
+            function load(src) {
+                return new Promise(function (resolve, reject) {
+                    var tag = document.createElement('script');
+                    tag.src = src;
+                    tag.onload = resolve;
+                    tag.onerror = function () {
+                        reject(new Error('Failed to load ' + src));
+                    };
+                    document.head.appendChild(tag);
+                });
+            }
+
+            function loadData() {
+                if (loaded) return Promise.resolve();
+                return load('../results/showcase_db.js?v=' + ts)
+                    .then(function () {
+                        loaded = true;
+                        window.dispatchEvent(new Event('CG3D_SCORE_READY'));
+                        window.dispatchEvent(new Event('CG3D_DATA_READY'));
+                    })
+                    .catch(function (error) {
+                        console.error('Scoreboard data loading error:', error);
+                        window.CG3D_DATA_FAILED = error;
+                        window.dispatchEvent(new CustomEvent('CG3D_DATA_ERROR', { detail: error }));
+                    });
+            }
+
+            window._loadData = loadData;
+            loadData();
+        })();
     </script>
+
+    <script src="../js/site.js"></script>
+    <script src="../js/scoreboard.js"></script>
 </body>
 </html>
+
