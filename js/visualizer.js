@@ -30,7 +30,10 @@ const NAMES = {
   "di-hy4-preview": "Tencent Hy4 Preview",
   "di-step-5-preview": "Step 5 Preview",
   "di-claude-sonnet-5-5": "Claude Sonnet 5.5",
-  "di-claude-opus-5-5": "Claude Opus 5.5"
+  "di-claude-opus-5-5": "Claude Opus 5.5",
+    "di-kimi-k3": "Kimi K3",
+    "di-glm-5.3": "GLM-5.3",
+    "di-gemini-3.7-flash": "Gemini 3.7 Flash"
 };
 
 const PALETTE = {
@@ -232,7 +235,7 @@ const Visualizer = {
       return;
     }
 
-    const providerOrder = ["gemini", "claude", "openai", "deepseek", "kimi", "mistral", "qwen", "xiaomi", "tencent", "stepfun", "deepinfra", "custom"];
+    const providerOrder = ["gemini", "claude", "openai", "deepseek", "kimi", "mistral", "qwen", "xiaomi", "tencent", "stepfun", "zhipu", "deepinfra", "custom"];
     const grouped = {};
     ids.forEach((id) => {
       const provider = this.getProvider(id);
@@ -874,6 +877,9 @@ const Visualizer = {
 
   getProvider(model) {
     if (!model) return "custom";
+    if (model.indexOf("di-kimi") === 0) return "kimi";
+      if (model.indexOf("di-glm") === 0) return "zhipu";
+      if (model.indexOf("di-gemini") === 0) return "gemini";
     if (model.indexOf("di-qwen") === 0) return "qwen";
     if (model.indexOf("di-claude") === 0) return "claude";
     if (model.indexOf("di-deepseek") === 0) return "deepseek";
