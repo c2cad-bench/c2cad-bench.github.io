@@ -34,14 +34,14 @@ const NAMES = {
 };
 
 const PALETTE = {
-  box: { color: 0x6366f1, emissive: 0x312e81, metalness: 0.18, roughness: 0.32 },
-  cylinder: { color: 0x0ea5e9, emissive: 0x0c4a6e, metalness: 0.2, roughness: 0.26 },
-  sphere: { color: 0xec4899, emissive: 0x831843, metalness: 0.12, roughness: 0.36 },
-  pipe: { color: 0xf59e0b, emissive: 0x78350f, metalness: 0.32, roughness: 0.2 },
-  beam: { color: 0x14b8a6, emissive: 0x134e4a, metalness: 0.14, roughness: 0.3 },
-  cone: { color: 0x8b5cf6, emissive: 0x4c1d95, metalness: 0.16, roughness: 0.28 },
-  torus: { color: 0xef4444, emissive: 0x7f1d1d, metalness: 0.26, roughness: 0.22 },
-  default: { color: 0x94a3b8, emissive: 0x334155, metalness: 0.08, roughness: 0.4 }
+  box: { color: 0x33506e, emissive: 0x1b2a3a, metalness: 0.18, roughness: 0.32 },
+  cylinder: { color: 0x4f7285, emissive: 0x2a3d47, metalness: 0.2, roughness: 0.26 },
+  sphere: { color: 0x7a4b4b, emissive: 0x3d2424, metalness: 0.12, roughness: 0.36 },
+  pipe: { color: 0x8a6d3b, emissive: 0x443519, metalness: 0.32, roughness: 0.2 },
+  beam: { color: 0x556b5b, emissive: 0x2a352d, metalness: 0.14, roughness: 0.3 },
+  cone: { color: 0x6b5a4a, emissive: 0x352d25, metalness: 0.16, roughness: 0.28 },
+  torus: { color: 0x7a3f3f, emissive: 0x3d1f1f, metalness: 0.26, roughness: 0.22 },
+  default: { color: 0x77746d, emissive: 0x3a3833, metalness: 0.08, roughness: 0.4 }
 };
 
 const AXIS_MAP = {

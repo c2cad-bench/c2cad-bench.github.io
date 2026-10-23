@@ -14,9 +14,7 @@
 .viz-page {
   position: relative;
   min-height: 100vh;
-  background:
-    radial-gradient(60% 60% at 90% 0%, var(--accent-soft), transparent 70%),
-    var(--bg);
+  background: var(--bg);
 }
 
 .viz-hero {
@@ -31,11 +29,7 @@
   inset: 0;
   pointer-events: none;
   opacity: 0.35;
-  background-image: linear-gradient(to right, var(--border) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
-  background-size: 62px 62px;
-  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 30% 0%, #000, transparent 80%);
-  mask-image: radial-gradient(ellipse 80% 80% at 30% 0%, #000, transparent 80%);
+  display: none;
 }
 
 .viz-hero .container {
@@ -462,8 +456,7 @@
   position: relative;
   height: 460px;
   width: 100%;
-  background:
-    radial-gradient(circle at 50% 40%, var(--bg) 0%, var(--bg-soft) 100%);
+  background: var(--bg-soft);
   cursor: grab;
   touch-action: none;
 }

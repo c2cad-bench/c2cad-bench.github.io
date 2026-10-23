@@ -19,14 +19,14 @@ const FEATURED_CASES = [
 ];
 
 const PALETTE = {
-  box: { color: 0x6366f1, emissive: 0x312e81 },
-  cylinder: { color: 0x0ea5e9, emissive: 0x0c4a6e },
-  sphere: { color: 0xec4899, emissive: 0x831843 },
-  pipe: { color: 0xf59e0b, emissive: 0x78350f },
-  beam: { color: 0x14b8a6, emissive: 0x134e4a },
-  cone: { color: 0x8b5cf6, emissive: 0x4c1d95 },
-  torus: { color: 0xef4444, emissive: 0x7f1d1d },
-  default: { color: 0x94a3b8, emissive: 0x334155 }
+  box: { color: 0x33506e, emissive: 0x1b2a3a },
+  cylinder: { color: 0x4f7285, emissive: 0x2a3d47 },
+  sphere: { color: 0x7a4b4b, emissive: 0x3d2424 },
+  pipe: { color: 0x8a6d3b, emissive: 0x443519 },
+  beam: { color: 0x556b5b, emissive: 0x2a352d },
+  cone: { color: 0x6b5a4a, emissive: 0x352d25 },
+  torus: { color: 0x7a3f3f, emissive: 0x3d1f1f },
+  default: { color: 0x77746d, emissive: 0x3a3833 }
 };
 
 const AXIS_MAP = {

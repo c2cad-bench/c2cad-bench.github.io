@@ -10,15 +10,15 @@
   --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
 
   /* Brand palette */
-  --accent: #4f46e5;
-  --accent-strong: #4338ca;
-  --accent-soft: rgba(79, 70, 229, 0.09);
-  --accent-ring: rgba(79, 70, 229, 0.28);
-  --accent-2: #0d9488;
-  --accent-2-soft: rgba(13, 148, 136, 0.1);
-  --accent-3: #f59e0b;
-  --gradient: linear-gradient(115deg, #4f46e5 0%, #2563eb 42%, #0ea5a4 100%);
-  --gradient-soft: linear-gradient(135deg, rgba(79, 70, 229, 0.12), rgba(14, 165, 164, 0.12));
+  --accent: #1f3a5f;
+  --accent-strong: #14273f;
+  --accent-soft: rgba(31, 58, 95, 0.06);
+  --accent-ring: rgba(31, 58, 95, 0.22);
+  --accent-2: #5b6b7c;
+  --accent-2-soft: rgba(91, 107, 124, 0.09);
+  --accent-3: #8a6d3b;
+  --gradient: var(--accent);
+  --gradient-soft: rgba(31, 58, 95, 0.06);
 
   /* Surfaces */
   --bg: #ffffff;
@@ -43,7 +43,7 @@
   --good-bg: rgba(5, 150, 105, 0.1);
   --warn: #d97706;
   --warn-bg: rgba(217, 119, 6, 0.11);
-  --bad: #e11d48;
+  --bad: #9b2c2c;
   --bad-bg: rgba(225, 29, 72, 0.1);
 
   /* Effects */
@@ -68,15 +68,15 @@
 }
 
 [data-theme="dark"] {
-  --accent: #818cf8;
-  --accent-strong: #a5b4fc;
-  --accent-soft: rgba(129, 140, 248, 0.13);
-  --accent-ring: rgba(129, 140, 248, 0.34);
-  --accent-2: #2dd4bf;
-  --accent-2-soft: rgba(45, 212, 191, 0.12);
-  --accent-3: #fbbf24;
-  --gradient: linear-gradient(115deg, #818cf8 0%, #60a5fa 42%, #2dd4bf 100%);
-  --gradient-soft: linear-gradient(135deg, rgba(129, 140, 248, 0.16), rgba(45, 212, 191, 0.12));
+  --accent: #9db8d6;
+  --accent-strong: #c3d6ea;
+  --accent-soft: rgba(157, 184, 214, 0.09);
+  --accent-ring: rgba(157, 184, 214, 0.22);
+  --accent-2: #a8a396;
+  --accent-2-soft: rgba(168, 163, 150, 0.1);
+  --accent-3: #c2a878;
+  --gradient: var(--accent);
+  --gradient-soft: rgba(157, 184, 214, 0.09);
 
   --bg: #080b15;
   --bg-soft: #0d1120;
@@ -97,7 +97,7 @@
   --good-bg: rgba(52, 211, 153, 0.12);
   --warn: #fbbf24;
   --warn-bg: rgba(251, 191, 36, 0.12);
-  --bad: #fb7185;
+  --bad: #cf9191;
   --bad-bg: rgba(251, 113, 133, 0.12);
 
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -315,11 +315,7 @@ kbd {
 }
 
 .text-gradient {
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: var(--accent);
 }
 
 .muted {
@@ -391,51 +387,51 @@ kbd {
 }
 
 .dot-gemini {
-  background: #4285f4;
+  background: #3b5f8a;
 }
 
 .dot-claude {
-  background: #d97706;
+  background: #8a5a3b;
 }
 
 .dot-deepseek {
-  background: #06b6d4;
+  background: #3f6b6b;
 }
 
 .dot-openai {
-  background: #10b981;
+  background: #4f6b4f;
 }
 
 .dot-mistral {
-  background: #ff4d4d;
+  background: #8a4d4d;
 }
 
 .dot-kimi {
-  background: #8b5cf6;
+  background: #6b6459;
 }
 
 .dot-custom {
-  background: #94a3b8;
+  background: #77746d;
 }
 
 .dot-qwen {
-  background: #a855f7;
+  background: #5b6b7c;
 }
 
 .dot-xiaomi {
-  background: #f97316;
+  background: #8a6d3b;
 }
 
 .dot-tencent {
-  background: #0ea5e9;
+  background: #3f6b8a;
 }
 
 .dot-stepfun {
-  background: #22c55e;
+  background: #55603f;
 }
 
 .dot-deepinfra {
-  background: #64748b;
+  background: #6b6459;
 }
 
 /* --------------------------------------------------------------------------

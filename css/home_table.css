@@ -109,23 +109,23 @@
 }
 
 .showcase-table thead th .rank-medal.rank-1 {
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
-  color: #ffffff;
+  background: var(--bg-deep);
+  color: var(--ink-soft);
 }
 
 .showcase-table thead th .rank-medal.rank-2 {
-  background: linear-gradient(135deg, #cbd5e1, #94a3b8);
-  color: #ffffff;
+  background: var(--bg-deep);
+  color: var(--ink-soft);
 }
 
 .showcase-table thead th .rank-medal.rank-3 {
-  background: linear-gradient(135deg, #d97706, #b45309);
-  color: #ffffff;
+  background: var(--bg-deep);
+  color: var(--ink-soft);
 }
 
 .showcase-table thead th .rank-medal.rank-4 {
-  background: linear-gradient(135deg, #64748b, #334155);
-  color: #ffffff;
+  background: var(--bg-deep);
+  color: var(--ink-soft);
 }
 
 .home-vp {
@@ -135,8 +135,7 @@
   margin: 0 auto;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  background:
-    radial-gradient(circle at 50% 38%, var(--bg-elev) 0%, var(--bg-soft) 100%);
+  background: var(--bg-soft);
   cursor: grab;
   touch-action: none;
   transition: transform var(--transition), border-color var(--transition),

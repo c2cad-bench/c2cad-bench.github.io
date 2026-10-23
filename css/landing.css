@@ -18,17 +18,11 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background:
-    radial-gradient(58% 55% at 78% 6%, rgba(79, 70, 229, 0.18), transparent 70%),
-    radial-gradient(46% 46% at 8% 26%, rgba(13, 148, 136, 0.13), transparent 72%),
-    radial-gradient(40% 40% at 50% 100%, rgba(37, 99, 235, 0.08), transparent 70%);
+  background: none;
 }
 
 [data-theme="dark"] .hero::before {
-  background:
-    radial-gradient(58% 55% at 78% 6%, rgba(129, 140, 248, 0.2), transparent 70%),
-    radial-gradient(46% 46% at 8% 26%, rgba(45, 212, 191, 0.14), transparent 72%),
-    radial-gradient(40% 40% at 50% 100%, rgba(96, 165, 250, 0.1), transparent 70%);
+  background: none;
 }
 
 .hero::after {
@@ -37,11 +31,7 @@
   inset: 0;
   pointer-events: none;
   opacity: 0.55;
-  background-image: linear-gradient(to right, var(--border) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
-  background-size: 68px 68px;
-  -webkit-mask-image: radial-gradient(ellipse 80% 62% at 50% 30%, #000 12%, transparent 72%);
-  mask-image: radial-gradient(ellipse 80% 62% at 50% 30%, #000 12%, transparent 72%);
+  background-image: none;
 }
 
 .hero > .container {
@@ -153,10 +143,7 @@
   z-index: -1;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(150deg, rgba(79, 70, 229, 0.5), transparent 34%, transparent 66%, rgba(13, 148, 136, 0.4));
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+  display: none;
 }
 
 .snapshot-head {
@@ -231,17 +218,13 @@
   height: 138px;
   flex: 0 0 auto;
   border-radius: 50%;
-  background: conic-gradient(var(--accent) calc(var(--pct) * 1%), var(--bg-deep) 0);
-  box-shadow: inset 0 0 0 1px var(--border);
+  background: transparent;
+  border: 6px solid var(--accent);
+  box-shadow: none;
 }
 
 .donut::before {
-  content: "";
-  position: absolute;
-  inset: 13px;
-  border-radius: 50%;
-  background: var(--bg-elev);
-  box-shadow: inset 0 0 0 1px var(--border);
+  display: none;
 }
 
 .donut-label {
@@ -314,11 +297,11 @@
 }
 
 .metric-fill.is-alt {
-  background: linear-gradient(90deg, #0ea5e9, #14b8a6);
+  background: var(--accent-2);
 }
 
 .metric-fill.is-warm {
-  background: linear-gradient(90deg, #f59e0b, #f97316);
+  background: var(--accent-3);
 }
 
 .snapshot-top {
@@ -358,18 +341,18 @@
 }
 
 .top-model:nth-child(2) .top-rank {
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
-  color: #ffffff;
+  background: var(--bg-deep);
+  color: var(--ink-soft);
 }
 
 .top-model:nth-child(3) .top-rank {
-  background: linear-gradient(135deg, #cbd5e1, #94a3b8);
-  color: #ffffff;
+  background: var(--bg-deep);
+  color: var(--ink-soft);
 }
 
 .top-model:nth-child(4) .top-rank {
-  background: linear-gradient(135deg, #d97706, #b45309);
-  color: #ffffff;
+  background: var(--bg-deep);
+  color: var(--ink-soft);
 }
 
 .top-name {
@@ -532,8 +515,8 @@
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  background: var(--gradient-soft);
-  filter: blur(6px);
+  background: var(--accent-soft);
+  filter: none;
   opacity: 0.8;
   pointer-events: none;
 }
@@ -678,19 +661,19 @@
 }
 
 .phase-card:nth-child(1) {
-  --phase-color: #6366f1;
+  --phase-color: #1f3a5f;
 }
 
 .phase-card:nth-child(2) {
-  --phase-color: #0ea5e9;
+  --phase-color: #4a5d73;
 }
 
 .phase-card:nth-child(3) {
-  --phase-color: #14b8a6;
+  --phase-color: #8a6d3b;
 }
 
 .phase-card:nth-child(4) {
-  --phase-color: #f59e0b;
+  --phase-color: #55603f;
 }
 
 .phase-top {
@@ -848,19 +831,19 @@
 }
 
 .family-chip[data-phase="1"] {
-  --chip-color: #6366f1;
+  --chip-color: #1f3a5f;
 }
 
 .family-chip[data-phase="2"] {
-  --chip-color: #0ea5e9;
+  --chip-color: #4a5d73;
 }
 
 .family-chip[data-phase="3"] {
-  --chip-color: #14b8a6;
+  --chip-color: #8a6d3b;
 }
 
 .family-chip[data-phase="4"] {
-  --chip-color: #f59e0b;
+  --chip-color: #55603f;
 }
 
 .family-chip small {
@@ -982,9 +965,7 @@
 .figure-media {
   position: relative;
   padding: 18px;
-  background:
-    radial-gradient(circle at 50% 0%, var(--bg-soft), transparent 75%),
-    var(--bg);
+  background: var(--bg);
   border-bottom: 1px solid var(--border);
 }
 
@@ -1127,7 +1108,7 @@
   width: 260px;
   height: 260px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(79, 70, 229, 0.55), transparent 68%);
+  display: none;
   pointer-events: none;
 }
 
@@ -1181,9 +1162,7 @@
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background:
-    radial-gradient(70% 120% at 100% 0%, var(--accent-soft), transparent 70%),
-    var(--bg-elev);
+  background: var(--bg-elev);
   box-shadow: var(--shadow-md);
 }
 
