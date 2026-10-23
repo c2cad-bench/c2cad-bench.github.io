@@ -86,11 +86,9 @@
       }
 
       this.visible.clear();
-      this.modelIds.slice(0, this.defaultVisible).forEach(
-        function (model) {
-          Scoreboard.visible.add(model);
-        }
-      );
+      this.modelIds.forEach(function (model) {
+        Scoreboard.visible.add(model);
+      });
 
       this.updateTabCounts();
       this.renderPodium();
